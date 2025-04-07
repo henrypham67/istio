@@ -1,2 +1,10 @@
 /.terraform/
 .idea
+
+kubeconfig
+.terraform.*
+.envrc
+
+terraform destroy --auto-approve \
+    -target="module.multi-primary-internet.module.cluster_1.module.eks_blueprints_addons.helm_release.this[\"istiod\"]" \
+    -target="module.multi-primary-internet.module.cluster_2.module.eks_blueprints_addons.helm_release.this[\"istiod\"]"

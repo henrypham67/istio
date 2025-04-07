@@ -15,7 +15,7 @@ help: ## Show this help message
 
 .PHONY: init
 init: ## Initialize Terraform
-	terraform init
+	terraform init -upgrade
 
 .PHONY: plan
 plan: ## Show Terraform plan

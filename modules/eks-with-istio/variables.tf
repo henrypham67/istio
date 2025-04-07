@@ -3,11 +3,6 @@ variable "cluster_version" {
   default = "1.32"
 }
 
-variable "aws_region" {
-  type    = string
-  default = "us-west-2"
-}
-
 variable "name" {
   type = string
 }

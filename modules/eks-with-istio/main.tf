@@ -39,10 +39,10 @@ module "eks" {
       instance_type = "t3.medium"
 
       min_size = 1
-      max_size = 1
+      max_size = 5
       # This value is ignored after the initial creation
       # https://github.com/bryantbiggs/eks-desired-size-hack
-      desired_size = 1
+      desired_size = 3
     }
   }
 
@@ -108,6 +108,7 @@ module "eks_blueprints_addons" {
       repository    = local.istio_chart_url
       name          = "istio-base"
       namespace     = local.istio_system_ns.name
+      wait          = true
     }
 
     # Control Plane
@@ -117,6 +118,7 @@ module "eks_blueprints_addons" {
       repository    = local.istio_chart_url
       name          = "istiod"
       namespace     = local.istio_system_ns.name
+      wait          = true
 
       set = [
         {

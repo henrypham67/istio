@@ -64,12 +64,12 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: cacerts
-  namespace: istio-system  # replace with the actual value of `local.istio_system_ns.name`
+  namespace: istio-system
 type: Opaque
-stringData:
-  ca-cert.pem: "${tls_locally_signed_cert.intermediate_ca_cert.cert_pem}"
-  ca-key.pem: "${tls_private_key.intermediate_ca_key.private_key_pem}"
-  root-cert.pem: "${tls_self_signed_cert.root_ca.cert_pem}"
-  cert-chain.pem: "${format("%s\n%s", tls_locally_signed_cert.intermediate_ca_cert.cert_pem, tls_self_signed_cert.root_ca.cert_pem)}"
+data:
+  ca-cert.pem: "${base64encode(tls_locally_signed_cert.intermediate_ca_cert.cert_pem)}"
+  ca-key.pem: "${base64encode(tls_private_key.intermediate_ca_key.private_key_pem)}"
+  root-cert.pem: "${base64encode(tls_self_signed_cert.root_ca.cert_pem)}"
+  cert-chain.pem: "${base64encode(format("%s\n%s", tls_locally_signed_cert.intermediate_ca_cert.cert_pem, tls_self_signed_cert.root_ca.cert_pem))}"
 YAML
 }

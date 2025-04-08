@@ -49,12 +49,12 @@ clean: ## Clean Terraform files
 
 .PHONY: get-kubeconfig
 get-kubeconfig: ## Get kubeconfig for EKS cluster
-	KUBE
-	@if [ -f default.pem ]; then \
-		rm -f default.pem; \
+	@if [ -f kubeconfig ]; then \
+		rm -f kubeconfig; \
 	fi
 	touch kubeconfig
-	aws eks update-kubeconfig --name cilium-test --alias ${CLUSTER_NAME} --kubeconfig
+	aws eks update-kubeconfig --name ${CLUSTER1} --kubeconfig kubeconfig --region us-east-1
+	aws eks update-kubeconfig --name ${CLUSTER2} --kubeconfig kubeconfig --region us-west-2
 
 .PHONY: all
 all: init validate plan apply ## Run init, validate, plan, and apply

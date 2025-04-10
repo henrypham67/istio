@@ -1,5 +1,7 @@
 # Learn Istio
 
+Code from this repository is inspired a lot by [istio-on-eks](https://github.com/aws-samples/istio-on-eks)
+
 ## Multi-primary & Multi-network over internet
 
 Update `.envrc` file to enable this pattern

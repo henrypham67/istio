@@ -26,7 +26,7 @@ module "cluster_1" {
 }
 
 module "multi_cluster_app_1" {
-  source = "../../modules/multi-cluster-app"
+  source     = "../../modules/multi-cluster-app"
   depends_on = [module.cluster_1]
 
   other_cluster_certificate_authority_data = module.cluster_2.certificate_authority_data
@@ -51,7 +51,7 @@ module "cluster_2" {
 }
 
 module "multi_cluster_app_2" {
-  source = "../../modules/multi-cluster-app"
+  source     = "../../modules/multi-cluster-app"
   depends_on = [module.cluster_2]
 
   other_cluster_certificate_authority_data = module.cluster_1.certificate_authority_data

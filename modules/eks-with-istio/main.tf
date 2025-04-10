@@ -202,12 +202,16 @@ module "eks_blueprints_addons" {
               "ISTIO_META_REQUESTED_NETWORK_VIEW" = var.name
             }
             service = {
-              annotations = {
-                "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
-                "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "ip"
-                "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internet-facing"
-                "service.beta.kubernetes.io/aws-load-balancer-attributes"      = "load_balancing.cross_zone.enabled=true"
-              }
+              annotations = merge(
+                {
+                  "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
+                  "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "ip"
+                  "service.beta.kubernetes.io/aws-load-balancer-attributes"      = "load_balancing.cross_zone.enabled=true"
+                },
+                var.is_internet_gateway ?
+                { "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internet-facing" } :
+                { "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internal" }
+              )
               ports = [
                 {
                   name       = "tls"

@@ -1,19 +1,18 @@
-variable "enable_multi_primary_internet" {
-  default = 0
+locals {
+  enable = {
+    multi_primary_internet = false
+    multi_primary_peering  = true
+  }
 }
 
-module "multi-primary-internet" {
-  source = "./multi-primary/internet"
-
-  count = var.enable_multi_primary_internet
-}
-
-variable "enable_multi_primary_peering" {
-  default = 0
-}
+# module "multi-primary-internet" {
+#   source = "./multi-primary/internet"
+#
+#   enable = local.enable.multi_primary_internet
+# }
 
 module "multi-primary-peering" {
   source = "./multi-primary/peering"
 
-  count = var.enable_multi_primary_peering
+  # enable = local.enable.multi_primary_peering
 }

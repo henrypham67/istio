@@ -4,11 +4,7 @@ Code from this repository is inspired a lot by [istio-on-eks](https://github.com
 
 ## Multi-primary & Multi-network over internet
 
-Update `.envrc` file to enable this pattern
-```bash
-export TF_VAR_ENABLE_MULTI_PRIMARY_INTERNET=1
-```
-
+Uncomment `main.tf` file at root project to enable this pattern
 To deploy infrastructure and application for testing
 ```bash
 make init apply

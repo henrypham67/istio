@@ -68,7 +68,7 @@ resource "aws_vpc_peering_connection_accepter" "peer" {
 
 # Requester side - set from default provider (assumed to be us-east-1)
 resource "aws_vpc_peering_connection_options" "requester" {
-  depends_on = [ aws_vpc_peering_connection_accepter.peer ]
+  depends_on                = [aws_vpc_peering_connection_accepter.peer]
   vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
 
   requester {
@@ -78,7 +78,7 @@ resource "aws_vpc_peering_connection_options" "requester" {
 
 # Accepter side - set from aws.us_west_2 provider
 resource "aws_vpc_peering_connection_options" "accepter" {
-  depends_on = [aws_vpc_peering_connection_accepter.peer]
+  depends_on                = [aws_vpc_peering_connection_accepter.peer]
   provider                  = aws.us_west_2
   vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
 

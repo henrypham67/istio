@@ -23,6 +23,12 @@ module "cluster_1" {
 
   vpc_cidr = var.vpc_cidr_block_1
   name     = var.cluster_1
+
+  providers = {
+    aws     = aws
+    helm    = helm.helm_1
+    kubectl = kubectl.kubectl_1
+  }
 }
 
 module "cluster_2" {
@@ -32,7 +38,9 @@ module "cluster_2" {
   name     = var.cluster_2
 
   providers = {
-    aws = aws.us_west_2
+    aws     = aws.us_west_2
+    helm    = helm.helm_2
+    kubectl = kubectl.kubectl_2
   }
 }
 

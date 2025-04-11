@@ -21,7 +21,7 @@ resource "helm_release" "multicluster_gateway_n_apps" {
 
   set {
     name  = "version"
-    value = "v2"
+    value = var.app_version
   }
 
   set {
@@ -39,8 +39,8 @@ resource "helm_release" "multicluster_gateway_n_apps" {
     value = var.other_cluster_endpoint
   }
 
-  # set {
-  #   name  = "token"
-  #   value = kubernetes_secret.istio_reader_token_1.data["token"]
-  # }
+  set {
+    name  = "token"
+    value = var.service_account_token
+  }
 }

@@ -53,8 +53,8 @@ get-kubeconfig: ## Get kubeconfig for EKS cluster
 		rm -f kubeconfig; \
 	fi
 	touch kubeconfig
-	aws eks update-kubeconfig --name ${CLUSTER1} --kubeconfig kubeconfig --region us-east-1
-	aws eks update-kubeconfig --name ${CLUSTER2} --kubeconfig kubeconfig --region us-west-2
+	aws eks update-kubeconfig --name ${CLUSTER1} --kubeconfig kubeconfig --region us-east-1 --alias ${CLUSTER1}
+	aws eks update-kubeconfig --name ${CLUSTER2} --kubeconfig kubeconfig --region us-west-2 --alias ${CLUSTER2}
 
 .PHONY: all
 all: init validate plan apply ## Run init, validate, plan, and apply

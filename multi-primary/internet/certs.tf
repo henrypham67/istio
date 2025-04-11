@@ -56,9 +56,7 @@ resource "tls_self_signed_cert" "root_ca" {
   ]
 }
 
-resource "kubectl_manifest" "cacerts_cluster" {
-  depends_on = [kubectl_manifest.istio_system]
-
+resource "kubectl_manifest" "cacerts_cluster_1" {
   yaml_body = <<YAML
 apiVersion: v1
 kind: Secret
@@ -72,4 +70,24 @@ data:
   root-cert.pem: "${base64encode(tls_self_signed_cert.root_ca.cert_pem)}"
   cert-chain.pem: "${base64encode(format("%s\n%s", tls_locally_signed_cert.intermediate_ca_cert.cert_pem, tls_self_signed_cert.root_ca.cert_pem))}"
 YAML
+
+  provider = kubectl.kubectl_1
+}
+
+resource "kubectl_manifest" "cacerts_cluster_2" {
+  yaml_body = <<YAML
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cacerts
+  namespace: istio-system
+type: Opaque
+data:
+  ca-cert.pem: "${base64encode(tls_locally_signed_cert.intermediate_ca_cert.cert_pem)}"
+  ca-key.pem: "${base64encode(tls_private_key.intermediate_ca_key.private_key_pem)}"
+  root-cert.pem: "${base64encode(tls_self_signed_cert.root_ca.cert_pem)}"
+  cert-chain.pem: "${base64encode(format("%s\n%s", tls_locally_signed_cert.intermediate_ca_cert.cert_pem, tls_self_signed_cert.root_ca.cert_pem))}"
+YAML
+
+  provider = kubectl.kubectl_2
 }

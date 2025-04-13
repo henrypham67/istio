@@ -11,7 +11,7 @@ variable "vpc_cidr" {
   type = string
 }
 
-variable "is_internet_gateway" {
+variable "is_internet_ew_gateway" {
   description = "Whether the Istio east-west gateway should be internet-facing (true) or private/internal (false)"
   type        = bool
   default     = true

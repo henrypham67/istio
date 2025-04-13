@@ -142,44 +142,44 @@ module "eks_blueprints_addons" {
       ]
     }
 
-    istio-ingress = {
-      chart            = "gateway"
-      chart_version    = local.istio_chart_version
-      repository       = local.istio_chart_url
-      name             = "istio-ingress"
-      namespace        = "istio-ingress" # per https://github.com/istio/istio/blob/master/manifests/charts/gateways/istio-ingress/values.yaml#L2
-      create_namespace = true
-
-      values = [
-        yamlencode(
-          {
-            labels = {
-              istio = "ingressgateway"
-            }
-            service = {
-              annotations = {
-                "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
-                "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "ip"
-                "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internet-facing"
-                "service.beta.kubernetes.io/aws-load-balancer-attributes"      = "load_balancing.cross_zone.enabled=true"
-              }
-              ports = [
-                {
-                  name       = "tls-istiod"
-                  port       = 15012
-                  targetPort = 15012
-                },
-                {
-                  name       = "tls-webhook"
-                  port       = 15017
-                  targetPort = 15017
-                }
-              ]
-            }
-          }
-        )
-      ]
-    }
+    # istio-ingress = {
+    #   chart            = "gateway"
+    #   chart_version    = local.istio_chart_version
+    #   repository       = local.istio_chart_url
+    #   name             = "istio-ingress"
+    #   namespace        = "istio-ingress" # per https://github.com/istio/istio/blob/master/manifests/charts/gateways/istio-ingress/values.yaml#L2
+    #   create_namespace = true
+    #
+    #   values = [
+    #     yamlencode(
+    #       {
+    #         labels = {
+    #           istio = "ingressgateway"
+    #         }
+    #         service = {
+    #           annotations = {
+    #             "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
+    #             "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "ip"
+    #             "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internet-facing"
+    #             "service.beta.kubernetes.io/aws-load-balancer-attributes"      = "load_balancing.cross_zone.enabled=true"
+    #           }
+    #           ports = [
+    #             {
+    #               name       = "tls-istiod"
+    #               port       = 15012
+    #               targetPort = 15012
+    #             },
+    #             {
+    #               name       = "tls-webhook"
+    #               port       = 15017
+    #               targetPort = 15017
+    #             }
+    #           ]
+    #         }
+    #       }
+    #     )
+    #   ]
+    # }
 
     istio-eastwestgateway = {
       chart         = "gateway"
@@ -206,7 +206,7 @@ module "eks_blueprints_addons" {
                   "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "ip"
                   "service.beta.kubernetes.io/aws-load-balancer-attributes"      = "load_balancing.cross_zone.enabled=true"
                 },
-                var.is_internet_gateway ?
+                var.is_internet_ew_gateway ?
                 { "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internet-facing" } :
                 { "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internal" }
               )
@@ -255,3 +255,4 @@ module "vpc" {
 
   tags = local.tags
 }
+

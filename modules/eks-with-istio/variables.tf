@@ -16,3 +16,23 @@ variable "is_internet_ew_gateway" {
   type        = bool
   default     = true
 }
+
+variable "enable_cert_manager" {
+  type    = bool
+  default = false
+}
+
+variable "vault_dns_name" {
+  type    = string
+  default = null
+}
+
+variable "vault_pki_root_path" {
+  type    = string
+  default = null
+}
+
+variable "root_ca_cert" {
+  type    = string
+  default = null
+}

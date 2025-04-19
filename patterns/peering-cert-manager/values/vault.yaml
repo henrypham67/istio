@@ -1,0 +1,24 @@
+server:
+  # Service type: Internal Load Balancer
+  service:
+    enabled: true
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: "external"
+      service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+      # Custom tags for identification via Terraform
+      service.beta.kubernetes.io/aws-load-balancer-name: "vault-lb"
+  # Enable Vault UI for testing
+  ui:
+    enabled: true
+
+  # Run Vault in "dev" mode. This requires no further setup, no state management,
+  # and no initialization. This is useful for experimenting with Vault without
+  # needing to unseal, store keys, et. al. All data is lost on restart - do not
+  # use dev mode for anything other than experimenting.
+  # See https://developer.hashicorp.com/vault/docs/concepts/dev-server to know more
+  dev:
+    enabled: true
+
+    # Set VAULT_DEV_ROOT_TOKEN_ID value
+    devRootToken: "root"

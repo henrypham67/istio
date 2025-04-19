@@ -97,6 +97,7 @@ module "eks_blueprints_addons" {
 
   # This is required to expose Istio Ingress Gateway
   enable_aws_load_balancer_controller = true
+  enable_cert_manager                 = var.enable_cert_manager
 
   helm_releases = {
     # Istio CRDs
@@ -118,7 +119,7 @@ module "eks_blueprints_addons" {
       namespace     = local.istio_system_ns.name
       wait          = true
 
-      set = [
+      set = concat([
         {
           name  = "meshConfig.accessLogFile"
           value = "/dev/stdout"
@@ -126,6 +127,10 @@ module "eks_blueprints_addons" {
         {
           name  = "global.meshID"
           value = var.name
+        },
+        {
+          name  = "global.multiCluster.enabled"
+          value = "true"
         },
         {
           name  = "global.multiCluster.clusterName"
@@ -139,7 +144,13 @@ module "eks_blueprints_addons" {
           name  = "gateways.istio-ingressgateway.injectionTemplate"
           value = "gateway"
         }
-      ]
+        ],
+        [
+          var.enable_cert_manager ? {
+            name  = "global.caAddress"
+            value = "cert-manager-istio-csr.istio-system.svc:443"
+          } : {}
+      ])
     }
 
     # istio-ingress = {

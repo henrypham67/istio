@@ -16,8 +16,6 @@ resource "vault_pki_secret_backend_intermediate_cert_request" "intermediate_ca_c
   type        = "internal"
 }
 
-
-
 resource "vault_pki_secret_backend_root_sign_intermediate" "signed_ca" {
   count = var.enable_cert_manager ? 1 : 0
 
@@ -30,7 +28,7 @@ resource "vault_pki_secret_backend_root_sign_intermediate" "signed_ca" {
 resource "vault_pki_secret_backend_intermediate_set_signed" "submit" {
   count = var.enable_cert_manager ? 1 : 0
 
-  backend = vault_mount.pki_int[0].path
+  backend     = vault_mount.pki_int[0].path
   certificate = vault_pki_secret_backend_root_sign_intermediate.signed_ca[0].certificate_bundle
 }
 

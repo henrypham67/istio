@@ -4,7 +4,6 @@ resource "helm_release" "vault" {
   repository = "https://helm.releases.hashicorp.com"
   chart      = "vault"
   version    = "0.30.0" # Check for latest version
-  wait       = true
 
   create_namespace = true
 
@@ -12,6 +11,7 @@ resource "helm_release" "vault" {
     file("${path.module}/values/vault.yaml")
   ]
 
+  timeout  = 600
   provider = helm.helm_1
 }
 
@@ -25,7 +25,7 @@ output "vault_lb_dns_name" {
 }
 
 provider "vault" {
-  address = "http://${data.aws_lb.vault.dns_name}:8200" # Or your internal LB DNS
+  address = "http://${data.aws_lb.vault.dns_name}:8200"
   token   = "root"
 }
 

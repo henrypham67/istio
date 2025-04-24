@@ -1,7 +1,7 @@
 resource "kubectl_manifest" "cert-manager-vault-token" {
   count = var.enable_cert_manager ? 1 : 0
 
-  depends_on = [module.eks_blueprints_addons]
+  depends_on = [module.eks]
   yaml_body  = <<YAML
 apiVersion: v1
 kind: Secret
@@ -17,7 +17,7 @@ YAML
 resource "kubectl_manifest" "vault_issuer" {
   count = var.enable_cert_manager ? 1 : 0
 
-  depends_on = [module.eks_blueprints_addons]
+  depends_on = [module.eks_blueprints_addons.cert_manager, vault_pki_secret_backend_role.istio_ca]
   yaml_body  = <<YAML
 apiVersion: cert-manager.io/v1
 kind: Issuer
@@ -30,8 +30,8 @@ spec:
     path: pki_int_istio-${var.name}/sign/istio-ca
     auth:
       tokenSecretRef:
-          name: cert-manager-vault-token
-          key: token
+        name: cert-manager-vault-token
+        key: token
 YAML
 }
 

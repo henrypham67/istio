@@ -78,7 +78,7 @@ module "eks" {
 # EKS Blueprints Addons
 ################################################################################
 
-resource "kubectl_manifest" "istio_system" {
+resource "kubectl_manifest" "istio_system_ns" {
   yaml_body = <<YAML
 apiVersion: v1
 kind: Namespace
@@ -90,6 +90,8 @@ YAML
 }
 
 module "eks_blueprints_addons" {
+  depends_on = [kubectl_manifest.istio_system_ns]
+
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "~> 1.21"
 
@@ -102,141 +104,160 @@ module "eks_blueprints_addons" {
   enable_aws_load_balancer_controller = true
   enable_cert_manager                 = var.enable_cert_manager
 
-  helm_releases = {
-    # Istio CRDs
-    istio-base = {
-      chart         = "base"
-      chart_version = local.istio_chart_version
-      repository    = local.istio_chart_url
-      name          = "istio-base"
-      namespace     = local.istio_system_ns.name
-      wait          = true
-    }
+  helm_releases = merge(
 
-    # Control Plane
-    istiod = {
-      chart         = "istiod"
-      chart_version = local.istio_chart_version
-      repository    = local.istio_chart_url
-      name          = "istiod"
-      namespace     = local.istio_system_ns.name
-      wait          = true
+    # Conditionally merge in the CRDs release
+    var.enable_cert_manager
+    ? {
+      "istio-crds" = {
+        chart      = "cert-manager-istio-csr"
+        version    = "0.14.0"
+        repository = "https://charts.jetstack.io"
+        name       = "istio-crds"
+        namespace  = local.istio_system_ns.name
+        wait       = true
+        values = [
+          templatefile("values/istio_csr.yaml", {
+            CLUSTER_ID = var.name
+          })
+        ]
+      }
+      } : {}, {
+      # Istio CRDs
+      istio-base = {
+        chart         = "base"
+        chart_version = local.istio_chart_version
+        repository    = local.istio_chart_url
+        name          = "istio-base"
+        namespace     = local.istio_system_ns.name
+        wait          = true
+      }
 
-      set = concat([
-        {
-          name  = "meshConfig.accessLogFile"
-          value = "/dev/stdout"
-        },
-        {
-          name  = "global.meshID"
-          value = var.name
-        },
-        {
-          name  = "global.multiCluster.enabled"
-          value = "true"
-        },
-        {
-          name  = "global.multiCluster.clusterName"
-          value = var.name
-        },
-        {
-          name  = "global.network"
-          value = var.name
-        },
-        {
-          name  = "gateways.istio-ingressgateway.injectionTemplate"
-          value = "gateway"
-        }
-        ],
-        [
-          var.enable_cert_manager ? {
-            name  = "global.caAddress"
-            value = "cert-manager-istio-csr.istio-system.svc:443"
-          } : {}
-      ])
-    }
+      # Control Plane
+      istiod = {
+        chart         = "istiod"
+        chart_version = local.istio_chart_version
+        repository    = local.istio_chart_url
+        name          = "istiod"
+        namespace     = local.istio_system_ns.name
+        wait          = true
 
-    # istio-ingress = {
-    #   chart            = "gateway"
-    #   chart_version    = local.istio_chart_version
-    #   repository       = local.istio_chart_url
-    #   name             = "istio-ingress"
-    #   namespace        = "istio-ingress" # per https://github.com/istio/istio/blob/master/manifests/charts/gateways/istio-ingress/values.yaml#L2
-    #   create_namespace = true
-    #
-    #   values = [
-    #     yamlencode(
-    #       {
-    #         labels = {
-    #           istio = "ingressgateway"
-    #         }
-    #         service = {
-    #           annotations = {
-    #             "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
-    #             "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "ip"
-    #             "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internet-facing"
-    #             "service.beta.kubernetes.io/aws-load-balancer-attributes"      = "load_balancing.cross_zone.enabled=true"
-    #           }
-    #           ports = [
-    #             {
-    #               name       = "tls-istiod"
-    #               port       = 15012
-    #               targetPort = 15012
-    #             },
-    #             {
-    #               name       = "tls-webhook"
-    #               port       = 15017
-    #               targetPort = 15017
-    #             }
-    #           ]
-    #         }
-    #       }
-    #     )
-    #   ]
-    # }
-
-    istio-eastwestgateway = {
-      chart         = "gateway"
-      chart_version = local.istio_chart_version
-      repository    = local.istio_chart_url
-      name          = "istio-eastwestgateway"
-      namespace     = local.istio_system_ns.name
-
-      values = [
-        yamlencode(
+        set = concat([
           {
-            labels = {
-              istio                       = "eastwestgateway"
-              app                         = "istio-eastwestgateway"
-              "topology.istio.io/network" = var.name
-            }
-            env = {
-              "ISTIO_META_REQUESTED_NETWORK_VIEW" = var.name
-            }
-            service = {
-              annotations = merge(
-                {
-                  "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
-                  "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "ip"
-                  "service.beta.kubernetes.io/aws-load-balancer-attributes"      = "load_balancing.cross_zone.enabled=true"
-                },
-                var.is_internet_ew_gateway ?
-                { "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internet-facing" } :
-                { "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internal" }
-              )
-              ports = [
-                {
-                  name       = "tls"
-                  port       = 15443
-                  targetPort = 15443
-                }
-              ]
-            }
+            name  = "meshConfig.accessLogFile"
+            value = "/dev/stdout"
+          },
+          {
+            name  = "global.meshID"
+            value = var.name
+          },
+          {
+            name  = "global.multiCluster.enabled"
+            value = "true"
+          },
+          {
+            name  = "global.multiCluster.clusterName"
+            value = var.name
+          },
+          {
+            name  = "global.network"
+            value = var.name
+          },
+          {
+            name  = "gateways.istio-ingressgateway.injectionTemplate"
+            value = "gateway"
           }
-        )
-      ]
+          ],
+          [
+            var.enable_cert_manager ? {
+              name  = "global.caAddress"
+              value = "cert-manager-istio-csr.istio-system.svc:443"
+            } : {}
+        ])
+      }
+
+      # istio-ingress = {
+      #   chart            = "gateway"
+      #   chart_version    = local.istio_chart_version
+      #   repository       = local.istio_chart_url
+      #   name             = "istio-ingress"
+      #   namespace        = "istio-ingress" # per https://github.com/istio/istio/blob/master/manifests/charts/gateways/istio-ingress/values.yaml#L2
+      #   create_namespace = true
+      #
+      #   values = [
+      #     yamlencode(
+      #       {
+      #         labels = {
+      #           istio = "ingressgateway"
+      #         }
+      #         service = {
+      #           annotations = {
+      #             "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
+      #             "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "ip"
+      #             "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internet-facing"
+      #             "service.beta.kubernetes.io/aws-load-balancer-attributes"      = "load_balancing.cross_zone.enabled=true"
+      #           }
+      #           ports = [
+      #             {
+      #               name       = "tls-istiod"
+      #               port       = 15012
+      #               targetPort = 15012
+      #             },
+      #             {
+      #               name       = "tls-webhook"
+      #               port       = 15017
+      #               targetPort = 15017
+      #             }
+      #           ]
+      #         }
+      #       }
+      #     )
+      #   ]
+      # }
+
+      istio-eastwestgateway = {
+        chart         = "gateway"
+        chart_version = local.istio_chart_version
+        repository    = local.istio_chart_url
+        name          = "istio-eastwestgateway"
+        namespace     = local.istio_system_ns.name
+
+        values = [
+          yamlencode(
+            {
+              labels = {
+                istio                       = "eastwestgateway"
+                app                         = "istio-eastwestgateway"
+                "topology.istio.io/network" = var.name
+              }
+              env = {
+                "ISTIO_META_REQUESTED_NETWORK_VIEW" = var.name
+              }
+              service = {
+                annotations = merge(
+                  {
+                    "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
+                    "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "ip"
+                    "service.beta.kubernetes.io/aws-load-balancer-attributes"      = "load_balancing.cross_zone.enabled=true"
+                  },
+                  var.is_internet_ew_gateway ?
+                  { "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internet-facing" } :
+                  { "service.beta.kubernetes.io/aws-load-balancer-scheme" = "internal" }
+                )
+                ports = [
+                  {
+                    name       = "tls"
+                    port       = 15443
+                    targetPort = 15443
+                  }
+                ]
+              }
+            }
+          )
+        ]
+      }
     }
-  }
+  )
 
   tags = local.tags
 }

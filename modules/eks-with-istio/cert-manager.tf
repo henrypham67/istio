@@ -35,20 +35,20 @@ spec:
 YAML
 }
 
-resource "helm_release" "istio_csr" {
-  count = var.enable_cert_manager ? 1 : 0
-
-  depends_on = [module.eks_blueprints_addons]
-  chart      = "cert-manager-istio-csr"
-  name       = "istio-csr"
-  repository = "https://charts.jetstack.io"
-  version    = "0.14.0"
-  wait       = true
-  namespace  = "istio-system"
-
-  values = [
-    templatefile("values/istio_csr.yaml", {
-      CLUSTER_ID = var.name
-    })
-  ]
-}
+# resource "helm_release" "istio_csr" {
+#   count = var.enable_cert_manager ? 1 : 0
+#
+#   depends_on = [modules.eks_blueprints_addons]
+#   chart      = "cert-manager-istio-csr"
+#   name       = "istio-csr"
+#   repository = "https://charts.jetstack.io"
+#   version    = "0.14.0"
+#   wait       = true
+#   namespace  = "istio-system"
+#
+#   values = [
+#     templatefile("values/istio_csr.yaml", {
+#       CLUSTER_ID = var.name
+#     })
+#   ]
+# }

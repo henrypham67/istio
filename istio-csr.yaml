@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: cert-manager-istio-csr
+    app.kubernetes.io/instance: istio-csr
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: cert-manager-istio-csr
+    app.kubernetes.io/version: v0.14.0
+    helm.sh/chart: cert-manager-istio-csr-v0.14.0
+    pod-template-hash: 5f7c448679
+  name: cert-manager-istio-csr-5f7c448679-2j47l
+  namespace: istio-system
+spec:
+  containers:
+  - args:
+    - --log-level=1
+    - --log-format=text
+    - --metrics-port=9402
+    - --readiness-probe-port=6060
+    - --readiness-probe-path=/readyz
+    - --certificate-namespace=istio-system
+    - --issuer-enabled=true
+    - --issuer-name=vault
+    - --issuer-kind=Issuer
+    - --issuer-group=cert-manager.io
+    - --preserve-certificate-requests=false
+    - --root-ca-file=
+    - --serving-certificate-dns-names=cert-manager-istio-csr.istio-system.svc
+    - --serving-certificate-duration=1h
+    - --trust-domain=cluster.local
+    - --cluster-id=cluster-2
+    - --max-client-certificate-duration=1h
+    - --serving-address=0.0.0.0:6443
+    - --serving-certificate-key-size=2048
+    - --serving-signature-algorithm=RSA
+    - --enable-client-cert-authenticator=false
+    - --leader-election-namespace=istio-system
+    - --disable-kubernetes-client-rate-limiter=false
+    - --runtime-issuance-config-map-name=
+    - --runtime-issuance-config-map-namespace=istio-system
+    - --istiod-cert-enabled=false
+    - --istiod-cert-name=istiod-dynamic
+    - --istiod-cert-namespace=istio-system
+    - --istiod-cert-duration=1h
+    - --istiod-cert-renew-before=30m
+    - --istiod-cert-key-algorithm=RSA
+    - --istiod-cert-key-size=2048
+    - --istiod-cert-additional-dns-names=
+    - --istiod-cert-istio-revisions=default
+    image: quay.io/jetstack/cert-manager-istio-csr:v0.14.0
+    name: cert-manager-istio-csr
+    ports:
+    - containerPort: 6443
+    - containerPort: 9402
+    readinessProbe:
+      httpGet:
+        path: /readyz
+        port: 6060
+      initialDelaySeconds: 3
+      periodSeconds: 7
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-tdks9
+      readOnly: true
+  nodeSelector:
+    kubernetes.io/os: linux
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  serviceAccountName: cert-manager-istio-csr
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: kube-api-access-tdks9
+    projected:
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              fieldPath: metadata.namespace
+            path: namespace

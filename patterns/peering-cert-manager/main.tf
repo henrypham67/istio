@@ -19,43 +19,300 @@ variable "vpc_cidr_block_2" {
 }
 
 module "cluster_1" {
-  source = "../../modules/eks-with-istio"
+  source = "./modules/eks"
 
-  vpc_cidr               = var.vpc_cidr_block_1
-  name                   = var.cluster_1
-  is_internet_ew_gateway = false
-  enable_cert_manager    = true
-  vault_dns_name         = data.aws_lb.vault.dns_name
-  vault_pki_root_path    = vault_mount.pki_root.path
-  root_ca_cert           = vault_pki_secret_backend_root_cert.root_ca.certificate
-
+  name     = var.cluster_1
+  vpc_cidr = var.vpc_cidr_block_1
   providers = {
-    aws     = aws
-    helm    = helm.helm_1
-    kubectl = kubectl.kubectl_1
+    aws  = aws
+    helm = helm.helm_1
   }
 }
 
 module "cluster_2" {
-  source = "../../modules/eks-with-istio"
+  source = "./modules/eks"
 
-  vpc_cidr               = var.vpc_cidr_block_2
-  name                   = var.cluster_2
-  is_internet_ew_gateway = false
-  enable_cert_manager    = true
-  vault_dns_name         = data.aws_lb.vault.dns_name
-  vault_pki_root_path    = vault_mount.pki_root.path
-  root_ca_cert           = vault_pki_secret_backend_root_cert.root_ca.certificate
-
+  name     = var.cluster_2
+  vpc_cidr = var.vpc_cidr_block_2
   providers = {
-    aws     = aws.us_west_2
-    helm    = helm.helm_2
-    kubectl = kubectl.kubectl_2
+    aws  = aws.us_west_2
+    helm = helm.helm_2
   }
 }
 
-resource "kubernetes_secret" "istio_reader_token_1" {
+resource "kubernetes_namespace_v1" "istio_system_1" {
+  metadata {
+    name = "istio-system"
+    labels = {
+      "topology.istio.io/network" = "istio-system"
+    }
+  }
+
+  provider = kubernetes.kubernetes_1
+}
+
+resource "kubernetes_namespace_v1" "istio_system_2" {
+  metadata {
+    name = "istio-system"
+    labels = {
+      "topology.istio.io/network" = "istio-system"
+    }
+  }
+
+  provider = kubernetes.kubernetes_2
+}
+
+resource "kubernetes_secret" "cert-manager-vault-token_1" {
   depends_on = [module.cluster_1]
+
+  metadata {
+    name      = "cert-manager-vault-token"
+    namespace = "istio-system"
+  }
+  data = {
+    "token" = "root"
+  }
+
+  provider = kubernetes.kubernetes_1
+}
+
+resource "kubernetes_secret" "cert-manager-vault-token_2" {
+  depends_on = [module.cluster_2]
+
+  metadata {
+    name      = "cert-manager-vault-token"
+    namespace = "istio-system"
+  }
+  data = {
+    "token" = "root"
+  }
+
+  provider = kubernetes.kubernetes_2
+}
+
+data "kubernetes_service" "vault" {
+  metadata {
+    name      = "vault"
+    namespace = "vault"
+  }
+
+  provider = kubernetes.kubernetes_1
+}
+
+locals {
+  vault_dns = data.kubernetes_service.vault.status[0].load_balancer[0].ingress[0].hostname
+}
+
+resource "kubernetes_manifest" "vault_issuer_1" {
+  depends_on = [module.cluster_1]
+  manifest = {
+    "apiVersion" = "cert-manager.io/v1"
+    "kind"       = "Issuer"
+    "metadata" = {
+      "name"      = "vault"
+      "namespace" = "istio-system"
+    }
+    "spec" = {
+      "vault" = {
+        "server" = "http://${local.vault_dns}:8200"
+        "path"   = "pki_int1_istio-cluster1/sign/istio-ca-istio-cluster1"
+        "auth" = {
+          "tokenSecretRef" = {
+            "name" = "cert-manager-vault-token"
+            "key"  = "token"
+          }
+        }
+      }
+    }
+  }
+
+  provider = kubernetes.kubernetes_1
+}
+
+resource "kubernetes_manifest" "vault_issuer_2" {
+  depends_on = [module.cluster_2]
+  manifest = {
+    "apiVersion" = "cert-manager.io/v1"
+    "kind"       = "Issuer"
+    "metadata" = {
+      "name"      = "vault"
+      "namespace" = "istio-system"
+    }
+    "spec" = {
+      "vault" = {
+        "server" = "http://${local.vault_dns}:8200"
+        "path"   = "pki_int1_istio-cluster1/sign/istio-ca-istio-cluster1"
+        "auth" = {
+          "tokenSecretRef" = {
+            "name" = "cert-manager-vault-token"
+            "key"  = "token"
+          }
+        }
+      }
+    }
+  }
+
+  provider = kubernetes.kubernetes_2
+}
+
+resource "helm_release" "istio_csr_1" {
+  depends_on = [kubernetes_manifest.vault_issuer_1]
+  chart      = "cert-manager-istio-csr"
+  repository = "https://charts.jetstack.io"
+  name       = "cert-manager-istio-csr"
+  version    = "0.14.0"
+  namespace  = "istio-system"
+  values = [
+    templatefile("values/istio_csr.yaml", {
+      CLUSTER_ID = var.cluster_1
+    })
+  ]
+  timeout  = 600
+  provider = helm.helm_1
+}
+
+resource "helm_release" "istio_csr_2" {
+  depends_on = [kubernetes_manifest.vault_issuer_2]
+  chart      = "cert-manager-istio-csr"
+  repository = "https://charts.jetstack.io"
+  name       = "cert-manager-istio-csr"
+  version    = "0.14.0"
+  namespace  = "istio-system"
+  values = [
+    templatefile("values/istio_csr.yaml", {
+      CLUSTER_ID = var.cluster_2
+    })
+  ]
+  timeout  = 600
+  provider = helm.helm_2
+}
+
+resource "helm_release" "istio-base" {
+  chart      = "base"
+  version    = "1.25.1"
+  name       = "istio-base"
+  namespace  = "istio-system"
+  repository = "https://istio-release.storage.googleapis.com/charts"
+
+  provider = helm.helm_1
+}
+
+# Control Plane
+resource "helm_release" "istiod" {
+  chart      = "istiod"
+  version    = "1.25.1"
+  repository = "https://istio-release.storage.googleapis.com/charts"
+  name       = "istiod"
+  namespace  = "istio-system"
+
+  values = [templatefile("values/istio.yaml", {
+    CLUSTER_NAME = var.cluster_1
+  })]
+
+  provider = helm.helm_1
+}
+
+resource "helm_release" "istio_base_2" {
+  chart      = "base"
+  version    = "1.25.1"
+  name       = "istio-base"
+  namespace  = "istio-system"
+  repository = "https://istio-release.storage.googleapis.com/charts"
+
+  provider = helm.helm_2
+}
+
+# Control Plane
+resource "helm_release" "istiod_2" {
+  chart      = "istiod"
+  version    = "1.25.1"
+  repository = "https://istio-release.storage.googleapis.com/charts"
+  name       = "istiod"
+  namespace  = "istio-system"
+
+  values = [templatefile("values/istio.yaml", {
+    CLUSTER_NAME = var.cluster_2
+  })]
+
+  provider = helm.helm_2
+}
+resource "helm_release" "istio-eastwestgateway-1" {
+  chart      = "gateway"
+  version    = "1.25.1"
+  repository = "https://istio-release.storage.googleapis.com/charts"
+  name       = "istio-eastwestgateway"
+  namespace  = "istio-system"
+
+  values = [
+    yamlencode({
+      labels = {
+        istio                       = "eastwestgateway"
+        app                         = "istio-eastwestgateway"
+        "topology.istio.io/network" = var.cluster_1
+      }
+      env = {
+        "ISTIO_META_REQUESTED_NETWORK_VIEW" = var.cluster_1
+      }
+      service = {
+        annotations = {
+          "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
+          "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "ip"
+          "service.beta.kubernetes.io/aws-load-balancer-attributes"      = "load_balancing.cross_zone.enabled=true"
+          "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internal"
+        }
+        ports = [
+          {
+            name       = "tls"
+            port       = 15443
+            targetPort = 15443
+          }
+        ]
+      }
+    })
+  ]
+
+  provider = helm.helm_1
+}
+resource "helm_release" "istio-eastwestgateway-2" {
+  chart      = "gateway"
+  version    = "1.25.1"
+  repository = "https://istio-release.storage.googleapis.com/charts"
+  name       = "istio-eastwestgateway"
+  namespace  = "istio-system"
+
+  values = [
+    yamlencode({
+      labels = {
+        istio                       = "eastwestgateway"
+        app                         = "istio-eastwestgateway"
+        "topology.istio.io/network" = var.cluster_2
+      }
+      env = {
+        "ISTIO_META_REQUESTED_NETWORK_VIEW" = var.cluster_2
+      }
+      service = {
+        annotations = {
+          "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
+          "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "ip"
+          "service.beta.kubernetes.io/aws-load-balancer-attributes"      = "load_balancing.cross_zone.enabled=true"
+          "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internal"
+        }
+        ports = [
+          {
+            name       = "tls"
+            port       = 15443
+            targetPort = 15443
+          }
+        ]
+      }
+    })
+  ]
+
+  provider = helm.helm_2
+}
+
+resource "kubernetes_secret" "istio_reader_token_1" {
+  depends_on = [module.cluster_1, kubernetes_namespace_v1.istio_system_1]
   metadata {
     annotations = {
       "kubernetes.io/service-account.name" = "istio-reader-service-account"
@@ -69,7 +326,7 @@ resource "kubernetes_secret" "istio_reader_token_1" {
 }
 
 resource "kubernetes_secret" "istio_reader_token_2" {
-  depends_on = [module.cluster_2]
+  depends_on = [module.cluster_2, kubernetes_namespace_v1.istio_system_2]
   metadata {
     annotations = {
       "kubernetes.io/service-account.name" = "istio-reader-service-account"

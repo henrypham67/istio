@@ -70,7 +70,7 @@ terraform apply --auto-approve -target helm_release.vault
 echo "Waiting for Vault Load Balancer to be ready..."
 wait_for_lb "$LB_NAME_PREFIX"  # You might need to refine the prefix if it's a different LB
 
-source .scripts/vault.sh
+bash ./scripts/vault.sh
 
 terraform apply --auto-approve
 

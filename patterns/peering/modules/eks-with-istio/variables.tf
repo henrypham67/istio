@@ -31,8 +31,3 @@ variable "vault_pki_root_path" {
   type    = string
   default = null
 }
-
-variable "root_ca_cert" {
-  type    = string
-  default = null
-}

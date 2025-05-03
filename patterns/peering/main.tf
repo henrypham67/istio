@@ -19,7 +19,7 @@ variable "vpc_cidr_block_2" {
 }
 
 module "cluster_1" {
-  source = "../../modules/eks-with-istio"
+  source = "modules/eks-with-istio"
 
   vpc_cidr               = var.vpc_cidr_block_1
   name                   = var.cluster_1
@@ -33,7 +33,7 @@ module "cluster_1" {
 }
 
 module "cluster_2" {
-  source = "../../modules/eks-with-istio"
+  source = "modules/eks-with-istio"
 
   vpc_cidr               = var.vpc_cidr_block_2
   name                   = var.cluster_2
@@ -75,7 +75,7 @@ resource "kubernetes_secret" "istio_reader_token_2" {
 }
 
 module "multi_cluster_app_1" {
-  source     = "../../modules/multi-cluster-app"
+  source     = "modules/multi-cluster-app"
   depends_on = [module.cluster_1, module.cluster_2]
 
   other_cluster_certificate_authority_data = module.cluster_2.certificate_authority_data
@@ -92,7 +92,7 @@ module "multi_cluster_app_1" {
 }
 
 module "multi_cluster_app_2" {
-  source     = "../../modules/multi-cluster-app"
+  source     = "modules/multi-cluster-app"
   depends_on = [module.cluster_1, module.cluster_2]
 
   other_cluster_certificate_authority_data = module.cluster_1.certificate_authority_data

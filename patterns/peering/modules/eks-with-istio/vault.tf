@@ -1,4 +1,3 @@
-
 resource "vault_mount" "pki_int" {
   count = var.enable_cert_manager ? 1 : 0
 

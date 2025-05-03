@@ -4,3 +4,8 @@
 .envrc
 kubeconfig
 .terraform.*
+*tfstate*
+
+*.csr
+*.pem
+*.crt

@@ -52,7 +52,7 @@ resource "helm_release" "istio_csr" {
       CLUSTER_ID = var.cluster_name
     })
   ]
-  timeout  = 600
+  timeout = 600
 }
 
 resource "helm_release" "istio_base" {

@@ -46,26 +46,26 @@ data "aws_lb" "vault" {
 
 module "istio-1" {
   depends_on = [module.cluster_1]
-  source = "./modules/istio"
+  source     = "./modules/istio"
 
   cluster_name = var.cluster_1
-  vault_dns = data.aws_lb.vault.dns_name
+  vault_dns    = data.aws_lb.vault.dns_name
 
   providers = {
-    helm = helm.helm_1
+    helm       = helm.helm_1
     kubernetes = kubernetes.kubernetes_1
   }
 }
 
 module "istio-2" {
   depends_on = [module.cluster_2]
-  source = "./modules/istio"
+  source     = "./modules/istio"
 
   cluster_name = var.cluster_2
-  vault_dns = data.aws_lb.vault.dns_name
+  vault_dns    = data.aws_lb.vault.dns_name
 
   providers = {
-    helm = helm.helm_2
+    helm       = helm.helm_2
     kubernetes = kubernetes.kubernetes_2
   }
 }

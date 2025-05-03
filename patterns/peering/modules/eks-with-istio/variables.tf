@@ -21,13 +21,3 @@ variable "enable_cert_manager" {
   type    = bool
   default = false
 }
-
-variable "vault_dns_name" {
-  type    = string
-  default = null
-}
-
-variable "vault_pki_root_path" {
-  type    = string
-  default = null
-}

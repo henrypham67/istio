@@ -168,12 +168,12 @@ module "eks_blueprints_addons" {
             value = "gateway"
           }
           ],
-          [
-            var.enable_cert_manager ? {
+          var.enable_cert_manager ? [
+            {
               name  = "global.caAddress"
               value = "cert-manager-istio-csr.istio-system.svc:443"
-            } : {}
-        ])
+            }
+        ] : [])
       }
 
       # istio-ingress = {

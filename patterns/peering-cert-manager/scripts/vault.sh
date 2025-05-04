@@ -11,6 +11,8 @@ ROLE_TTL="72h"          # 3 days
 ROLE_DOMAINS="istio-ca"
 ROLE_URI_SANS="spiffe://*"
 CLUSTERS=( "cluster1" "cluster2" )
+
+VAULT_LB_NAME="vault-lb"
 #———————————————————————————————————————————————————————————————
 
 #—— DEPENDENCY CHECK ——————————————————————————————————————————————
@@ -37,14 +39,23 @@ vault_secrets_engine_enabled() {
 }
 
 #—— DISCOVER VAULT ADDRESS ————————————————————————————————————————
-log "Fetching ELB DNS name..."
-VAULT_DNS=$(aws elbv2 describe-load-balancers \
+echo "Looking for Vault Load Balancer with name prefix '${VAULT_LB_NAME}'..."
+VAULT_LB_DNS=$(aws elbv2 describe-load-balancers \
   --region "$AWS_REGION" \
-  --query 'LoadBalancers[0].DNSName' \
+  --query "LoadBalancers[?contains(LoadBalancerName, \`${VAULT_LB_NAME}\`)].DNSName" \
   --output text)
-export VAULT_ADDR="http://${VAULT_DNS}:${VAULT_PORT}"
-export VAULT_TOKEN="${VAULT_TOKEN:-root}"
-log "Using VAULT_ADDR=$VAULT_ADDR"
+
+if [[ -z "$VAULT_LB_DNS" ]]; then
+  echo "❌ Failed to find Load Balancer with prefix '${VAULT_LB_NAME}'"
+  exit 1
+fi
+
+echo "✅ Found Vault Load Balancer DNS: ${VAULT_LB_DNS}"
+
+export VAULT_ADDR="http://${VAULT_LB_DNS}:${VAULT_PORT}"
+export VAULT_TOKEN=root
+
+echo "🔐 Vault will be configured at: $VAULT_ADDR"
 
 #—— ROOT CA SETUP ————————————————————————————————————————————————
 if ! vault_secrets_engine_enabled "pki_root"; then
@@ -59,8 +70,8 @@ if ! vault_secrets_engine_enabled "pki_root"; then
 
   log "Configuring issuing and CRL URLs..."
   vault write pki_root/config/urls \
-      issuing_certificates="http://${VAULT_DNS}:${VAULT_PORT}/v1/pki_root/ca" \
-      crl_distribution_points="http://${VAULT_DNS}:${VAULT_PORT}/v1/pki_root/crl"
+      issuing_certificates="${VAULT_ADDR}/v1/pki_root/ca" \
+      crl_distribution_points="${VAULT_ADDR}/v1/pki_root/crl"
 else
   log "Root CA at pki_root already exists. Skipping creation."
   vault read -field=certificate pki_root/cert/ca > CA_cert.crt

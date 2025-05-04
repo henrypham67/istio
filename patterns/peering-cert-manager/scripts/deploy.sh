@@ -76,5 +76,5 @@ terraform apply --auto-approve
 
 echo """
   A sample app has been deploy in both clusters
-  Run ../../scripts/check-cross-cluster-sync.sh to test the connectivity
+  Run 'make check-sync' to test the connectivity
 """

@@ -38,26 +38,32 @@ make check-sync  # Verify cross-cluster connectivity (if supported)
 
 ## 📦 Pattern-Specific Instructions
 
-patterns/internet
+### internet
 
 Uses internet-facing Istio east-west gateways with self-managed CA.
 
+```bash
 cd patterns/internet
-make apply
+make init apply
+```
 
-patterns/peering
+### peering
 
 Sets up private east-west communication using AWS VPC peering.
 
+```bash
 cd patterns/peering
-make apply
+make init apply
+```
 
-patterns/peering-cert-manager
+### peering-cert-manager
 
 Uses Vault and cert-manager to issue Istio certificates.
 
+```bash
 cd patterns/peering-cert-manager
-bash scripts/deploy.sh
+make deploy
+```
 
 This script bootstraps the infrastructure and configures Vault.
 

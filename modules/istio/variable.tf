@@ -2,6 +2,6 @@ variable "cluster_name" {
   type = string
 }
 
-variable "vault_dns" {
+variable "vault_lb_name" {
   type = string
 }

@@ -1,3 +1,7 @@
+data "aws_lb" "vault" {
+  name = var.vault_lb_name
+}
+
 resource "kubernetes_namespace_v1" "istio_system" {
   metadata {
     name = "istio-system"
@@ -27,7 +31,7 @@ resource "kubernetes_manifest" "vault_issuer" {
     }
     "spec" = {
       "vault" = {
-        "server" = "http://${var.vault_dns}:8200"
+        "server" = "http://${data.aws_lb.vault.dns_name}:8200"
         "path"   = "pki_int1_istio-cluster1/sign/istio-ca-istio-cluster1"
         "auth" = {
           "tokenSecretRef" = {

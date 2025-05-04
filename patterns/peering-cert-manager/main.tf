@@ -18,8 +18,13 @@ variable "vpc_cidr_block_2" {
   default = "10.2.0.0/16"
 }
 
+variable "vault_lb_name" {
+  type = string
+  default = "vault-lb"
+}
+
 module "cluster_1" {
-  source = "./modules/eks"
+  source = "../../modules/eks"
 
   name     = var.cluster_1
   vpc_cidr = var.vpc_cidr_block_1
@@ -30,7 +35,7 @@ module "cluster_1" {
 }
 
 module "cluster_2" {
-  source = "./modules/eks"
+  source = "../../modules/eks"
 
   name     = var.cluster_2
   vpc_cidr = var.vpc_cidr_block_2
@@ -40,16 +45,12 @@ module "cluster_2" {
   }
 }
 
-data "aws_lb" "vault" {
-  name = "vault-lb"
-}
-
 module "istio-1" {
-  depends_on = [module.cluster_1]
-  source     = "./modules/istio"
+  depends_on = [module.cluster_1, helm_release.vault]
+  source     = "../../modules/istio"
 
   cluster_name = var.cluster_1
-  vault_dns    = data.aws_lb.vault.dns_name
+  vault_lb_name    = var.vault_lb_name
 
   providers = {
     helm       = helm.helm_1
@@ -58,11 +59,11 @@ module "istio-1" {
 }
 
 module "istio-2" {
-  depends_on = [module.cluster_2]
-  source     = "./modules/istio"
+  depends_on = [module.cluster_2, helm_release.vault]
+  source     = "../../modules/istio"
 
   cluster_name = var.cluster_2
-  vault_dns    = data.aws_lb.vault.dns_name
+  vault_lb_name    = var.vault_lb_name
 
   providers = {
     helm       = helm.helm_2
@@ -99,7 +100,7 @@ resource "kubernetes_secret" "istio_reader_token_2" {
 }
 
 module "multi_cluster_app_1" {
-  source     = "./modules/multi-cluster-app"
+  source     = "../../modules/multi-cluster-app"
   depends_on = [module.cluster_1, module.cluster_2]
 
   other_cluster_certificate_authority_data = module.cluster_2.certificate_authority_data
@@ -111,12 +112,12 @@ module "multi_cluster_app_1" {
 
   providers = {
     helm    = helm.helm_1
-    kubectl = kubectl.kubectl_1
+    kubernetes = kubernetes.kubernetes_1
   }
 }
 
 module "multi_cluster_app_2" {
-  source     = "./modules/multi-cluster-app"
+  source     = "../../modules/multi-cluster-app"
   depends_on = [module.cluster_1, module.cluster_2]
 
   other_cluster_certificate_authority_data = module.cluster_1.certificate_authority_data
@@ -126,6 +127,6 @@ module "multi_cluster_app_2" {
 
   providers = {
     helm    = helm.helm_2
-    kubectl = kubectl.kubectl_2
+    kubernetes = kubernetes.kubernetes_2
   }
 }

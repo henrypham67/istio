@@ -1,22 +1,13 @@
-locals {
-  namespace = "sample"
-}
-
-resource "kubectl_manifest" "sample_namespace" {
-  yaml_body = <<YAML
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: ${local.namespace}
-  labels:
-    istio-injection: "enabled"
-YAML
+resource "kubernetes_namespace_v1" "sample" {
+  metadata {
+    name = "sample"
+  }
 }
 
 resource "helm_release" "multicluster_gateway_n_apps" {
   name       = "multicluster-gateway-n-apps"
   repository = "${path.module}/charts"
-  namespace  = local.namespace
+  namespace  = kubernetes_namespace_v1.sample.metadata[0].name
   chart      = "multicluster-gateway-n-apps"
 
   set {

@@ -38,7 +38,6 @@ check-sync:
 deploy:
 	bash ./scripts/deploy.sh
 
-.PHONY: get-kubeconfig
 get-kubeconfig: ## Get kubeconfig for EKS cluster
 	@if [ -f kubeconfig ]; then \
 		rm -f kubeconfig; \

@@ -37,7 +37,6 @@ clean: ## Remove local Terraform state & cache
 check-sync:
 	@echo "→ Running cross-cluster sync check…"
 	bash bash ../../scripts/check-cross-cluster-sync.sh
-	.PHONY: get-kubeconfig
 
 get-kubeconfig: ## Get kubeconfig for EKS cluster
 	@if [ -f kubeconfig ]; then \

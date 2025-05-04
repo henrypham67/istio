@@ -1,7 +1,7 @@
 SHELL       := /bin/bash
 .DEFAULT_GOAL := help
 
-.PHONY: help init plan apply destroy fmt validate clean check-sync
+.PHONY: help init plan apply destroy fmt validate clean check-sync get-kubeconfig
 
 help: ## Show this help message
 	@echo "Usage: make [target]"
@@ -33,7 +33,16 @@ clean: ## Remove local Terraform state & cache
 
 check-sync:
 	@echo "→ Running cross-cluster sync check…"
-	$(SCRIPTS)/check-cross-cluster-sync.sh
+	bash ../../scripts/check-cross-cluster-sync.sh
 
 deploy:
 	bash ./scripts/deploy.sh
+
+.PHONY: get-kubeconfig
+get-kubeconfig: ## Get kubeconfig for EKS cluster
+	@if [ -f kubeconfig ]; then \
+		rm -f kubeconfig; \
+	fi
+	touch kubeconfig
+	aws eks update-kubeconfig --name ${CLUSTER1} --kubeconfig kubeconfig --region us-east-1 --alias ${CLUSTER1}
+	aws eks update-kubeconfig --name ${CLUSTER2} --kubeconfig kubeconfig --region us-west-2 --alias ${CLUSTER2}

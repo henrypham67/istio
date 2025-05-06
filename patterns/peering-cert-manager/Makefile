@@ -19,7 +19,7 @@ apply: ## Apply Terraform changes
 	terraform apply -auto-approve
 
 destroy: ## Destroy Terraform-managed infrastructure
-	bash ./scripts/destroy.sh
+	terraform destroy -auto-approve
 
 fmt: ## Format Terraform code
 	terraform fmt -recursive

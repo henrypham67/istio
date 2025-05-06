@@ -1,4 +1,5 @@
 resource "helm_release" "vault" {
+  depends_on = [module.cluster_1]
   name       = "vault"
   namespace  = "vault"
   repository = "https://helm.releases.hashicorp.com"

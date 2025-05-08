@@ -1,8 +1,3 @@
-variable "cluster_name" {
-  type    = string
-  default = "my-cluster"
-}
-
 module "cluster" {
   source = "../../../modules/eks"
 

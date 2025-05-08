@@ -6,12 +6,12 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://your.git.repo/observability-gitops
-    targetRevision: HEAD
-    path: charts/elasticsearch
+    repoURL: https://helm.elastic.co
+    chart: elasticsearch
+    targetRevision: 8.5.1
     helm:
       valueFiles:
-        - values/es.yaml
+        - patterns/observability/argo/values/es.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: observability

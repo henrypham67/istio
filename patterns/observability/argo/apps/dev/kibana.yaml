@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kiali
+  name: kibana
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: https://your.git.repo/observability-gitops
-    targetRevision: HEAD
-    path: charts/kiali
+    repoURL: https://helm.elastic.co
+    chart: kibana
+    targetRevision: 8.5.1
     helm:
       valueFiles:
-        - values/kiali.yaml
+        - patterns/observability/argo/values/kibana.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: observability

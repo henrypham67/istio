@@ -1,7 +1,3 @@
-resource "argocd_repository" "public_git" {
-  repo = "git@github.com:henrypham67/istio.git"
-}
-
 resource "argocd_application" "app_of_apps" {
   metadata {
     name      = "observability"

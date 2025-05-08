@@ -1,4 +1,0 @@
-resources:
-  - kibana/app.yaml
-  - kiali/app.yaml
-  - elasticsearch/app.yaml

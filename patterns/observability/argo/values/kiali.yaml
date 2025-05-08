@@ -1,0 +1,6 @@
+auth:
+  strategy: anonymous
+
+cr:
+  create: true
+  namespace: observability

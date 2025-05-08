@@ -1,13 +1,6 @@
 locals {
   azs = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  istio_chart_url     = "https://istio-release.storage.googleapis.com/charts"
-  istio_chart_version = "1.25.1"
-
-  istio_system_ns = {
-    name = "istio-system"
-  }
-
   tags = {
     Blueprint  = var.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
@@ -59,9 +52,9 @@ module "eks" {
       ami_type      = "AL2_x86_64"
       instance_type = "t3.medium"
 
-      min_size     = 2
-      max_size     = 5
-      desired_size = 2
+      min_size     = var.min_nodes
+      max_size     = var.max_nodes
+      desired_size = var.desired_nodes
       iam_role_additional_policies = {
         ebs_policy = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
       }
@@ -95,6 +88,14 @@ module "eks" {
       type                          = "ingress"
       source_cluster_security_group = true
     }
+    # ingress_80 = {
+    #   description                   = "HTTTP"
+    #   protocol                      = "TCP"
+    #   from_port                     = 80
+    #   to_port                       = 80
+    #   type                          = "ingress"
+    #   source_cluster_security_group = true
+    # }
   }
   tags = local.tags
 }

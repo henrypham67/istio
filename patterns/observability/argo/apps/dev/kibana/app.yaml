@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kibana
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://your.git.repo/observability-gitops
+    targetRevision: HEAD
+    path: charts/kibana
+    helm:
+      valueFiles:
+        - values/kibana.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observability
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

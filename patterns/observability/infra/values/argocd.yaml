@@ -1,0 +1,15 @@
+## Argo Configs
+configs:
+  # Argo CD sensitive data
+  # Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#sensitive-data-and-sso-client-secrets
+  secret:
+    # -- Bcrypt hashed admin password
+    ## Argo expects the password in the secret to be bcrypt hashed. You can create this hash with
+    ## `htpasswd -nbBC 10 "" $ARGO_PWD | tr -d ':\n' | sed 's/$2y/$2a/'`
+    argocdServerAdminPassword: "$2a$10$FuR7Scgi2f4/y7GrZaG1yusxZJ3HeDmrijTdEfwCqcMU8rJ.mSitC"
+
+  params:
+    ## Server properties
+    # -- Run server without TLS
+    ## NOTE: This value should be set when you generate params by other means as it changes ports used by ingress template.
+    server.insecure: true

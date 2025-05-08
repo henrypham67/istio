@@ -10,3 +10,18 @@ variable "name" {
 variable "vpc_cidr" {
   type = string
 }
+
+variable "max_nodes" {
+  type = number
+  default = 5
+}
+
+variable "min_nodes" {
+  type = number
+  default = 2
+}
+
+variable "desired_nodes" {
+  type = number
+  default = 3
+}

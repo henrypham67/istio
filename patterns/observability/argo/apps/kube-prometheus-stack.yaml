@@ -8,14 +8,14 @@ spec:
   sources:
     - repoURL: https://github.com/henrypham67/istio
       targetRevision: HEAD
-      path: patterns/observability/argo/values/kube-prometheus-stack
+#      path: patterns/observability/argo/values/kube-prometheus-stack
       ref: custom
     - repoURL: https://prometheus-community.github.io/helm-charts
       chart: kube-prometheus-stack
       targetRevision: 72.1.0
       helm:
         valueFiles:
-          - $custom/values.yaml
+          - $custom/patterns/observability/argo/values/kube-prometheus-stack/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: observability

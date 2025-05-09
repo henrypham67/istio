@@ -8,7 +8,7 @@ spec:
   sources:
     - repoURL: https://github.com/henrypham67/istio
       targetRevision: HEAD
-      path: patterns/observability/argo/app/dev/kube-prometheus-stack
+      path: patterns/observability/argo/values/dev/kube-prometheus-stack
       ref: custom
     - repoURL: https://prometheus-community.github.io/helm-charts
       chart: kube-prometheus-stack
@@ -26,4 +26,4 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ApplyOutOfSyncOnly=true
-      - Replace=true
+      - ServerSideApply=true

@@ -1,18 +1,18 @@
 apiVersion: networking.istio.io/v1
 kind: VirtualService
 metadata:
-  name: grafana-vs
-  namespace: monitoring
+  name: grafana
+  namespace: observability
 spec:
   hosts:
     - "*"
   gateways:
-    - grafana-gateway
+    - istio-system/shared-gateway
   http:
     - match:
         - port: 5000
       route:
         - destination:
-            host: kube-prometheus-stack-grafana.monitoring.svc.cluster.local
+            host: kube-prometheus-stack-grafana.observability.svc.cluster.local
             port:
               number: 80

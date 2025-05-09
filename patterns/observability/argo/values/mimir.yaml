@@ -1,6 +1,4 @@
 mimir:
-  alertmanager:
-    enabled: false
   common:
     storage:
       backend: s3
@@ -8,6 +6,9 @@ mimir:
         endpoint: s3.amazonaws.com
         bucket_name: my-mimir-bucket
         region: us-east-1
+
+alertmanager:
+  enabled: false
 
 serviceAccount:
   create: false

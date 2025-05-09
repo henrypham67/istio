@@ -17,7 +17,7 @@ spec:
       ref: custom
   destination:
     server: https://kubernetes.default.svc
-    namespace: observability
+    namespace: logging
   syncPolicy:
     automated:
       prune: true

@@ -1,0 +1,12 @@
+mimir:
+  common:
+    storage:
+      backend: s3
+      s3:
+        endpoint: s3.amazonaws.com
+        bucket_name: my-mimir-bucket
+        region: us-east-1
+
+serviceAccount:
+  create: false
+  name: mimir-sa

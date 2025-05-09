@@ -5,10 +5,16 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: https://grafana.github.io/helm-charts
-    chart: mimir-distributed
-    targetRevision: 5.7.0
+  sources:
+    - repoURL: https://grafana.github.io/helm-charts
+      chart: mimir-distributed
+      targetRevision: 5.7.0
+      helm:
+        valueFiles:
+          - $custom/patterns/observability/argo/values/mimir.yaml
+    - repoURL: https://github.com/henrypham67/istio
+      targetRevision: HEAD
+      ref: custom
   destination:
     server: https://kubernetes.default.svc
     namespace: observability

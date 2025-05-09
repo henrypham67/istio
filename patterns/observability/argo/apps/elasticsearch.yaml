@@ -9,9 +9,12 @@ spec:
     - repoURL: https://helm.elastic.co
       chart: elasticsearch
       targetRevision: 8.5.1
-#    - repoURL: 'https://git.example.com/org/value-files.git'
-#      targetRevision: dev
-#      ref: values
+      helm:
+        valueFiles:
+          - $custom/patterns/observability/argo/values/es.yaml
+    - repoURL: https://github.com/henrypham67/istio
+      targetRevision: HEAD
+      ref: custom
   destination:
     server: https://kubernetes.default.svc
     namespace: observability

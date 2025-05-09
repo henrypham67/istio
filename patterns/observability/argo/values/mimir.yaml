@@ -1,4 +1,6 @@
 mimir:
+  alertmanager:
+    enabled: false
   common:
     storage:
       backend: s3

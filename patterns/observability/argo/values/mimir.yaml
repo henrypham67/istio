@@ -10,6 +10,9 @@ mimir:
 alertmanager:
   enabled: false
 
+minio:
+  enabled: false
+
 serviceAccount:
   create: false
   name: mimir-sa

@@ -13,6 +13,9 @@ alertmanager:
 minio:
   enabled: false
 
+compactor:
+  storageClass: "gp2"
+
 serviceAccount:
   create: false
   name: mimir-sa

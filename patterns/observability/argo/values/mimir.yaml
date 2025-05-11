@@ -1,21 +1,114 @@
+serviceAccount:
+  create: false
+  name: mimir-sa
+
 mimir:
-  common:
-    storage:
+  structuredConfig:
+    memberlist:
+      cluster_label: "mimir"
+      cluster_label_verification_disabled: false
+    server:
+      log_level: info
+      grpc_server_max_recv_msg_size: 104857600
+      grpc_server_max_send_msg_size: 104857600
+      grpc_server_max_concurrent_streams: 1000
+    limits:
+      max_label_names_per_series: 120
+      max_global_series_per_user: 12000000
+      ingestion_burst_size: 200000
+      ingestion_rate: 150000
+      max_global_series_per_metric: 200000000
+      compactor_blocks_retention_period: 24h
+    alertmanager_storage:
       backend: s3
       s3:
-        endpoint: s3.amazonaws.com
         bucket_name: my-mimir-bucket-1999070605
-        region: us-east-1
+    ruler_storage:
+      backend: s3
+      s3:
+        bucket_name: my-mimir-bucket-1999070605
+    blocks_storage:
+      backend: s3
+      s3: 
+        endpoint: "minio.default.svc.cluster.local:9000"
+        bucket_name: "my-mimir-bucket-1999070605"
+        insecure: true
+    compactor:
+      compaction_interval: 24h
+
+# Writes incoming series to long-term storage on the write path and returns series samples for queries on the read path.
+ingester:
+  zoneAwareReplication:
+    enabled: false
+  persistentVolume:
+    enabled: false
+  replicas: 2
+
+# Receives data from alloy, corrects, devides data to batches and send to ingesters
+distributor:
+  extraArgs:
+    auth.multitenancy-enabled: false
+    log.level: info
+  replicas: 2
+
+# Increases query performance and reduces long-term storage usage by combining blocks.
+compactor:
+  replicas: 2
+
+# Evaluates PromQL expressions by fetching time series and labels on the read path. Uses store-gateway fron minio and ingester for latest data
+querier:
+  replicas: 2
+
+# "frontend" for querier
+query_frontend:
+  replicas: 2
+
+# comuniacation with minio
+store_gateway:
+  zoneAwareReplication:
+    enabled: false
+  replicas: 2
+
+## Disabled services:
+rollout_operator:
+  enabled: false
+
+gateway:
+  enabledNonEnterprise: false
+
+ruler:
+  extraArgs:
+    auth.multitenancy-enabled: false
+  enabled: false
+
+query_scheduler:
+  enabled: false
+
+overrides_exporter:
+  enabled: false
 
 alertmanager:
   enabled: false
 
-minio:
+admin-cache:
   enabled: false
 
-compactor:
-  storageClass: "gp2"
+chunks-cache:
+  enabled: false
 
-serviceAccount:
-  create: false
-  name: mimir-sa
+index-cache:
+  enabled: false
+
+metadata-cache:
+  enabled: false
+
+results-cache:
+  enabled: false
+
+nginx:
+  enabled: true
+  ingress:
+    enabled: false
+
+minio:
+  enabled: false

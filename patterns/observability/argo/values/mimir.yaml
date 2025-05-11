@@ -4,7 +4,7 @@ mimir:
       backend: s3
       s3:
         endpoint: s3.amazonaws.com
-        bucket_name: my-mimir-bucket20250510075031954100000001
+        bucket_name: my-mimir-bucket-1999070605
         region: us-east-1
 
 alertmanager:

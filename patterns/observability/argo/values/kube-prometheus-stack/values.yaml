@@ -1,4 +1,2 @@
 grafana:
   adminPassword: admin
-
-  # TODO: this does not apply

@@ -11,7 +11,7 @@ spec:
       targetRevision: 5.7.0
       helm:
         valueFiles:
-          - $custom/patterns/observability/argo/values/mimir.yaml
+          - $custom/multi-network/observability/argo/values/mimir.yaml
     - repoURL: https://github.com/henrypham67/istio
       targetRevision: HEAD
       ref: custom

@@ -25,3 +25,8 @@ variable "desired_nodes" {
   type = number
   default = 3
 }
+
+variable "instance_type" {
+  type = string
+  default = "t4g.medium"
+}

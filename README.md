@@ -4,9 +4,9 @@ This repository provides Terraform configurations for deploying multi-cluster Is
 
 ## 📁 Available Patterns
 
-- [`internet`](patterns/internet): Cross-cluster communication over **internet-facing gateways**.
-- [`peering`](patterns/peering): Communication via **AWS VPC peering**.
-- [`peering-cert-manager`](patterns/peering-cert-manager): VPC peering with **Vault + cert-manager**-based certificate management.
+- [`internet`](multi-network/internet): Cross-cluster communication over **internet-facing gateways**.
+- [`peering`](multi-network/peering): Communication via **AWS VPC peering**.
+- [`peering-cert-manager`](multi-network/peering-cert-manager): VPC peering with **Vault + cert-manager**-based certificate management.
 
 ---
 
@@ -43,7 +43,7 @@ make check-sync  # Verify cross-cluster connectivity (if supported)
 Uses internet-facing Istio east-west gateways with self-managed CA.
 
 ```bash
-cd patterns/internet
+cd multi-network/internet
 make init apply
 ```
 
@@ -52,7 +52,7 @@ make init apply
 Sets up private east-west communication using AWS VPC peering.
 
 ```bash
-cd patterns/peering
+cd multi-network/peering
 make init apply
 ```
 
@@ -61,7 +61,7 @@ make init apply
 Uses Vault and cert-manager to issue Istio certificates.
 
 ```bash
-cd patterns/peering-cert-manager
+cd multi-network/peering-cert-manager
 make deploy
 ```
 

@@ -50,7 +50,7 @@ module "eks" {
   eks_managed_node_groups = {
     worker_nodes = { # node group name
       ami_type      = "AL2_x86_64"
-      instance_type = "t3.medium"
+      instance_type = var.instance_type
 
       min_size     = var.min_nodes
       max_size     = var.max_nodes

@@ -11,7 +11,7 @@ spec:
       targetRevision: 6.29.0
       helm:
         valueFiles:
-          - $custom/multi-network/observability/argo/values/loki.yaml
+          - $custom/observability/argo/values/loki.yaml
     - repoURL: https://github.com/henrypham67/istio
       targetRevision: HEAD
       ref: custom

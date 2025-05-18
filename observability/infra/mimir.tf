@@ -56,6 +56,7 @@ resource "aws_iam_role_policy_attachment" "attach" {
 
 # Kubernetes Service Account
 resource "kubernetes_service_account" "mimir" {
+  depends_on = [argocd_application.app_of_apps]
   metadata {
     name      = "mimir-sa"
     namespace = "observability"

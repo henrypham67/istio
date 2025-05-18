@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: loki
-  namespace: logging
+  namespace: argocd
 spec:
   project: default
   sources:
@@ -17,7 +17,7 @@ spec:
       ref: custom
   destination:
     server: https://kubernetes.default.svc
-    namespace: monitoring
+    namespace: logging
   syncPolicy:
     automated:
       prune: true

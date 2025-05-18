@@ -2,6 +2,12 @@ global:
   dnsNamespace: kube-system
   clusterDomain: cluster.local
 
+serviceAccount:
+  create: false
+  # -- Alertmanager specific service account name. If not set and create is set to true, the default
+  # name will be the default mimir service account's name with the "-alertmanager" suffix.
+  name: "mimir-sa"
+
 mimir:
   structuredConfig:
     usage_stats:
@@ -21,7 +27,6 @@ mimir:
       data_dir: /data
     multitenancy_enabled: false
     frontend:
-      align_queries_with_step: true
       log_queries_longer_than: 10s
     ingester:
       instance_limits:
@@ -67,5 +72,11 @@ ingester:
     size: 5Gi
     storageClass: gp2
 store_gateway:
- zoneAwareReplication:
-  enabled: false
+  persistentVolume:
+    storageClass: gp2
+  zoneAwareReplication:
+    enabled: false
+
+compactor:
+  persistentVolume:
+    storageClass: gp2

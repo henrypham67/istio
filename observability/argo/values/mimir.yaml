@@ -8,6 +8,9 @@ serviceAccount:
   # name will be the default mimir service account's name with the "-alertmanager" suffix.
   name: "mimir-sa"
 
+disableComponents: &disableComponents
+  enabled: false
+
 mimir:
   structuredConfig:
     usage_stats:
@@ -54,13 +57,13 @@ mimir:
     runtime_config:
       file: /var/{{ include "mimir.name" . }}/runtime.yaml
 minio:
-  enabled: false
+  <<: *disableComponents
 querier:
   replicas: 2
 alertmanager:
-  enabled: false
+  <<: *disableComponents
 ruler:
-  enabled: false
+  <<: *disableComponents
 ingester:
   zoneAwareReplication:
     enabled: false

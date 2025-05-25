@@ -10,7 +10,7 @@ resource "argocd_application" "app_of_apps" {
 
     source {
       repo_url        = var.git_argocd_repo_url
-      path            = "patterns/observability/argo/apps"
+      path            = "observability/argo/apps"
       target_revision = "HEAD"
     }
 

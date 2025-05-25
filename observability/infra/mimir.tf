@@ -54,12 +54,18 @@ resource "aws_iam_role_policy_attachment" "attach" {
   policy_arn = aws_iam_policy.mimir_s3.arn
 }
 
+resource "kubernetes_namespace" "observability" {
+  metadata {
+    name = "observability"
+  }
+}
+
 # Kubernetes Service Account
 resource "kubernetes_service_account" "mimir" {
   depends_on = [argocd_application.app_of_apps]
   metadata {
     name      = "mimir-sa"
-    namespace = "observability"
+    namespace = kubernetes_namespace.observability.metadata[0].name
   }
 }
 

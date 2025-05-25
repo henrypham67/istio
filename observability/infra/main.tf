@@ -4,7 +4,8 @@ module "cluster" {
   name     = var.cluster_name
   vpc_cidr = "10.1.0.0/16"
 
-  desired_nodes = 5
+  desired_nodes = 6
+  max_nodes = 6
 }
 
 resource "helm_release" "istio_base" {
@@ -76,6 +77,11 @@ resource "helm_release" "istio_gateway" {
               name       = "grafana"
               port       = 5000
               targetPort = 5000
+            },
+            {
+              name       = "kiali"
+              port       = 6000
+              targetPort = 6000
             }
           ]
         }

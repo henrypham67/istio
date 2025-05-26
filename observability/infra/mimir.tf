@@ -73,7 +73,7 @@ resource "kubernetes_service_account" "mimir" {
 resource "aws_eks_pod_identity_association" "mimir" {
   depends_on      = [helm_release.argocd]
   cluster_name    = var.cluster_name
-  namespace       = "argocd"
+  namespace       = "observability"
   service_account = "mimir-sa"
   role_arn        = aws_iam_role.mimir_pod_identity.arn
 }

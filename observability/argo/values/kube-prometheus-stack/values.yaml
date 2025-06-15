@@ -12,6 +12,20 @@ grafana:
       # Allow discovery in all namespaces for dashboards
       searchNamespace: ALL
 
+  additionalDataSources:
+   - name: loki
+     access: proxy
+#     basicAuth: true
+#     secureJsonData:
+#         basicAuthPassword: pass
+#     basicAuthUser: daco
+     editable: false
+     jsonData:
+         tlsSkipVerify: true
+     orgId: 1
+     type: loki
+     url: http://loki.logging.svc.cluster.local:3100
+     version: 1
 
 remote_write:
   - url: http://mimir.observability.svc.cluster.local

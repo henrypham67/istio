@@ -1,0 +1,13 @@
+podAnnotations:
+  # -- Pod annotations for KEDA operator
+  keda:
+    traffic.sidecar.istio.io/excludeInboundPorts: "9666"
+    traffic.sidecar.istio.io/excludeOutboundPorts: "9443,6443"
+  # -- Pod annotations for KEDA Metrics Adapter
+  metricsAdapter:
+    traffic.sidecar.istio.io/excludeInboundPorts: "6443"
+    traffic.sidecar.istio.io/excludeOutboundPorts: "9666,9443"
+  # -- Pod annotations for KEDA Admission webhooks
+  webhooks:
+    traffic.sidecar.istio.io/excludeInboundPorts: "9443"
+    traffic.sidecar.istio.io/excludeOutboundPorts: "9666,6443"

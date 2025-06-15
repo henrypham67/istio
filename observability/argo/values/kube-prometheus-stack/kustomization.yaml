@@ -13,3 +13,5 @@ configMapGenerator:
       labels:
         grafana_dashboard: "1"
 
+resources:
+  - virtual-service.yaml

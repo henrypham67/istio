@@ -14,7 +14,7 @@ spec:
       targetRevision: 2.17.1
       helm:
         valueFiles:
-          - $custom/observability/argo/values/keda/values.yaml
+          - $custom/observability/argo/values/keda.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: observability

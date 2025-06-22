@@ -8,14 +8,13 @@ spec:
   sources:
     - repoURL: https://github.com/henrypham67/istio
       targetRevision: HEAD
-      path: observability/argo/values/tempo
       ref: custom
     - repoURL: https://grafana.github.io/helm-charts
       chart: tempo
       targetRevision: 1.21.1
       helm:
         valueFiles:
-          - $custom/observability/argo/values/tempo/values.yaml
+          - $custom/observability/argo/values/tempo.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring

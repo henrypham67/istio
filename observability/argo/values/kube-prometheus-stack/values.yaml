@@ -2,8 +2,8 @@ grafana:
   adminPassword: admin
   sidecar:
     datasources:
-      name: Prometheus
-      uid: prometheus
+      name: Mimir
+      uid: mimir
       url: http://mimir-nginx.monitoring.svc.cluster.local/prometheus
     dashboards:
       enabled: true
@@ -13,7 +13,8 @@ grafana:
       searchNamespace: ALL
 
   additionalDataSources:
-   - name: loki
+   - name: Loki
+     uid: loki
      access: proxy
 #     basicAuth: true
 #     secureJsonData:
@@ -26,7 +27,16 @@ grafana:
      type: loki
      url: http://loki.logging.svc.cluster.local:3100
      version: 1
+   - name: Prometheus
+     uid: prometheus
+     editable: false
+     jsonData:
+         tlsSkipVerify: true
+     orgId: 1
+     type: loki
+     url: http://kube-prometheus-stack-prometheus.monitoring:9090
+     version: 1
 
 remote_write:
-  - url: http://mimir.monitoring.svc.cluster.local
+  - url: http://mimir-nginx.monitoring.svc.cluster.local/api/v1/push
     remote_timeout: 30s

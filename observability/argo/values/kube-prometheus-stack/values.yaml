@@ -39,8 +39,6 @@ grafana:
 
 prometheus:
   prometheusSpec:
-    serviceMonitorSelectorNilUsesHelmValues: false
-    replicas: 2
     remoteWriteDashboards: true
     remoteWrite:
       - name: mimir

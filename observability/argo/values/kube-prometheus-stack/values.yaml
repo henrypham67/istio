@@ -33,7 +33,7 @@ grafana:
      jsonData:
          tlsSkipVerify: true
      orgId: 1
-     type: loki
+     type: Prometheus
      url: http://kube-prometheus-stack-prometheus.monitoring:9090
      version: 1
 

@@ -37,6 +37,14 @@ grafana:
      url: http://kube-prometheus-stack-prometheus.monitoring:9090
      version: 1
 
-remote_write:
-  - url: http://mimir-nginx.monitoring.svc.cluster.local/api/v1/push
-    remote_timeout: 30s
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    replicas: 2
+    remoteWriteDashboards: true
+    remoteWrite:
+      - name: mimir
+        url: http://mimir-nginx.monitoring.svc.cluster.local/api/v1/push
+        remoteTimeout: 30s
+        headers:
+          X-Scope-OrgID: in-cluster

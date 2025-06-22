@@ -17,7 +17,7 @@ spec:
           - $custom/observability/argo/values/keda.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: observability
+    namespace: keda
   syncPolicy:
     automated:
       prune: true

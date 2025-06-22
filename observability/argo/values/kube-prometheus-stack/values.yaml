@@ -4,7 +4,7 @@ grafana:
     datasources:
       name: Prometheus
       uid: prometheus
-      url: http://mimir.observability.svc.cluster.local
+      url: http://mimir.monitoring.svc.cluster.local
     dashboards:
       enabled: true
       label: grafana_dashboard
@@ -28,5 +28,5 @@ grafana:
      version: 1
 
 remote_write:
-  - url: http://mimir.observability.svc.cluster.local
+  - url: http://mimir.monitoring.svc.cluster.local
     remote_timeout: 30s

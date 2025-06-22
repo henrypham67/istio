@@ -54,9 +54,9 @@ resource "aws_iam_role_policy_attachment" "attach" {
   policy_arn = aws_iam_policy.mimir_s3.arn
 }
 
-resource "kubernetes_namespace" "observability" {
+resource "kubernetes_namespace" "monitoring" {
   metadata {
-    name = "observability"
+    name = "monitoring"
   }
 }
 
@@ -65,7 +65,7 @@ resource "kubernetes_service_account" "mimir" {
   depends_on = [argocd_application.app_of_apps]
   metadata {
     name      = "mimir-sa"
-    namespace = kubernetes_namespace.observability.metadata[0].name
+    namespace = kubernetes_namespace.monitoring.metadata[0].name
   }
 }
 
@@ -73,7 +73,7 @@ resource "kubernetes_service_account" "mimir" {
 resource "aws_eks_pod_identity_association" "mimir" {
   depends_on      = [helm_release.argocd]
   cluster_name    = var.cluster_name
-  namespace       = "observability"
+  namespace       = "monitoring"
   service_account = "mimir-sa"
   role_arn        = aws_iam_role.mimir_pod_identity.arn
 }

@@ -18,7 +18,7 @@ spec:
           - $custom/observability/argo/values/tempo/values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: observability
+    namespace: monitoring
   syncPolicy:
     automated:
       prune: true

@@ -1,0 +1,50 @@
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: opentelemetry
+spec:
+  mode: deployment
+  ports:
+    - name: loki
+      port: 3500
+      protocol: TCP
+      targetPort: 3500
+  config: |
+    receivers:
+      loki:
+        protocols:
+          http:
+            endpoint: 0.0.0.0:3500
+        use_incoming_timestamp: true
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+    processors:
+      batch:
+      attributes:
+        actions:
+          - action: insert
+            key: loki.attribute.labels
+            value: namespace,container,pod,level,traceId
+          - action: insert
+            key: loki.format
+            value: raw
+
+    exporters:
+      loki:
+        endpoint: http://loki-gateway/loki/api/v1/push
+      otlphttp:
+        endpoint: http://tempo:4318
+    service:
+      pipelines:
+        logs:
+          receivers: [loki]
+          processors: [attributes]
+          exporters: [loki]
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlphttp]

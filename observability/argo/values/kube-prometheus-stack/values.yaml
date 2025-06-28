@@ -25,7 +25,7 @@ grafana:
          tlsSkipVerify: true
      orgId: 1
      type: loki
-     url: http://loki.logging.svc.cluster.local:3100
+     url: http://loki-gateway.logging.svc.cluster.local
      version: 1
    - name: Prometheus
      uid: prometheus

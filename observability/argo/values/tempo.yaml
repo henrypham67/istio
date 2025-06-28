@@ -2,4 +2,4 @@ tempo:
   metricsGenerator:
     # -- If true, enables Tempo's metrics generator (https://grafana.com/docs/tempo/next/metrics-generator/)
     enabled: true
-    remoteWriteUrl: "http://kube-prometheus-stack-prometheus.monitoring:9090/api/v1/write"
+    remoteWriteUrl: "http://mimir-nginx.monitoring.svc.cluster.local/api/v1/push"

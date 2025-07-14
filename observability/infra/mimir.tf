@@ -1,6 +1,6 @@
 # S3 bucket for Mimir
 resource "aws_s3_bucket" "mimir" {
-  bucket = "my-mimir-bucket-1999070605"
+  bucket = "my-mimir-bucket-199907060500"
   force_destroy = true
 }
 

@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Reference the base directory
+resources:
+  - delpoy.yaml
+  - service.yaml
+  - virtual-service.yaml
+  - service-monitor.yaml

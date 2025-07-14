@@ -21,7 +21,7 @@ mimir:
       bucket_store:
         sync_dir: /data/tsdb-sync
       s3:
-        bucket_name: my-mimir-bucket-1999070605
+        bucket_name: my-mimir-bucket-199907060500
         endpoint: s3.us-east-1.amazonaws.com
         insecure: false
       tsdb:

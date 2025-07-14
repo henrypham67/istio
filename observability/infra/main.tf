@@ -82,6 +82,11 @@ resource "helm_release" "istio_gateway" {
               name       = "kiali"
               port       = 6000
               targetPort = 6000
+            },
+            {
+              name       = "test-app"
+              port       = 8080
+              targetPort = 8080
             }
           ]
         }

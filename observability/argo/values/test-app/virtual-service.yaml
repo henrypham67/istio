@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: test-app
+  namespace: test-app
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - istio-system/shared-gateway
+  http:
+    - match:
+        - port: 8080
+      route:
+        - destination:
+            host: test-app.test-app.svc.cluster.local
+            port:
+              number: 80

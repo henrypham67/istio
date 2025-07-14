@@ -65,6 +65,13 @@ spec:
       hosts:
         - "${data.aws_lb.istio_gateway.dns_name}"
 
+    - port:
+        number: 8080
+        name: test-app
+        protocol: HTTP
+      hosts:
+        - "${data.aws_lb.istio_gateway.dns_name}"
+
 YAML
 }
 

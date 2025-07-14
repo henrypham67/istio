@@ -18,26 +18,35 @@ spec:
             endpoint: 0.0.0.0:4317
           http:
             endpoint: 0.0.0.0:4318
-
+      prometheus:
+        config:
+          scrape_configs:
+            - job_name: "kubernetes"
+              kubernetes_sd_configs:
+                - role: pod
+      filelog:
+        include: ["/var/log/pods/*.log"]
     processors:
-      batch: null
+      batch:
+        timeout: 5s
     exporters:
-      # Send logs (and optionally traces/metrics) to Loki's OTLP endpoint
-      otlphttp/loki:
-        endpoint: http://loki-gateway.logging.svc.cluster.local/otlp
-
+      loki:
+        endpoint: http://loki.logging.svc.cluster.local:3100/loki/api/v1/push
       otlphttp/tempo:
         endpoint: http://tempo.monitoring.svc.cluster.local:4318
+      debug:
 
     service:
       pipelines:
         logs:
           receivers: 
             - otlp
+            - filelog
           processors: 
             - batch
           exporters: 
-            - otlphttp/loki
+            - loki
+            - debug
         traces:
           receivers: 
             - otlp
@@ -45,3 +54,4 @@ spec:
             - batch
           exporters: 
             - otlphttp/tempo
+            - debug

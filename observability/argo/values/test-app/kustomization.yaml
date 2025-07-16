@@ -3,7 +3,7 @@ kind: Kustomization
 
 # Reference the base directory
 resources:
-  - delpoy.yaml
+  - deploy.yaml
   - service.yaml
   - virtual-service.yaml
   - service-monitor.yaml

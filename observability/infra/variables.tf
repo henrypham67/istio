@@ -11,5 +11,5 @@ variable "git_argocd_repo_url" {
 variable "mimir_bucket_name" {
   description = "Name of the S3 bucket for Mimir storage"
   type        = string
-  default     = "my-mimir-bucket"
+  default     = "my-mimir-bucket-199907060500"
 }

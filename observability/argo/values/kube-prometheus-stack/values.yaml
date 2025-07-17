@@ -13,29 +13,29 @@ grafana:
       searchNamespace: ALL
 
   additionalDataSources:
-   - name: Loki
-     uid: loki
-     access: proxy
+    - name: Loki
+      uid: loki
+      access: proxy
 #     basicAuth: true
 #     secureJsonData:
 #         basicAuthPassword: pass
 #     basicAuthUser: daco
-     editable: false
-     jsonData:
-         tlsSkipVerify: true
-     orgId: 1
-     type: loki
-     url: http://loki-gateway.logging.svc.cluster.local
-     version: 1
-   - name: Prometheus
-     uid: prometheus
-     editable: false
-     jsonData:
-         tlsSkipVerify: true
-     orgId: 1
-     type: prometheus
-     url: http://kube-prometheus-stack-prometheus.monitoring:9090
-     version: 1
+      editable: false
+      jsonData:
+          tlsSkipVerify: true
+      orgId: 1
+      type: loki
+      url: http://loki-gateway.logging.svc.cluster.local
+      version: 1
+    - name: Prometheus
+      uid: prometheus
+      editable: false
+      jsonData:
+          tlsSkipVerify: true
+      orgId: 1
+      type: prometheus
+      url: http://kube-prometheus-stack-prometheus.monitoring:9090
+      version: 1
 
 prometheus:
   prometheusSpec:

@@ -2,175 +2,166 @@
 
 This folder contains Terraform and Argo CD manifests used to deploy a small EKS cluster for experimenting with logging, monitoring and tracing tools. The infrastructure provisions Istio and uses Argo CD to manage a collection of Grafana applications.
 
-## Infrastructure
-
-The cluster is created through Terraform in [`infra`](./infra). A sample of the configuration shows the EKS module and Istio base release:
-
-```hcl
-module "cluster" {
-  source = "../../modules/eks"
-  name     = var.cluster_name
-  vpc_cidr = "10.1.0.0/16"
-  desired_nodes = 6
-  max_nodes = 6
-}
-
-resource "helm_release" "istio_base" {
-  depends_on       = [module.cluster]
-  chart            = "base"
-  version          = "1.25.1"
-  name             = "istio-base"
-  namespace        = "istio-system"
-  repository       = "https://istio-release.storage.googleapis.com/charts"
-  create_namespace = true
-}
+```text
+└── observability
+    ├── README.md
+    ├── argo
+        ├── apps
+        │   ├── keda.yaml
+        │   ├── kiali.yaml
+        │   ├── kube-prometheus-stack.yaml
+        │   ├── loki.yaml
+        │   ├── mimir.yaml
+        │   ├── open-telemetry.yaml
+        │   ├── tempo.yaml
+        │   └── test-app.yaml
+        └── values
+        │   ├── keda.yaml
+        │   ├── kiali.yaml
+        │   ├── kibana.yaml
+        │   ├── kube-prometheus-stack
+        │       ├── dashboards
+        │       │   ├── istio_control_plane.json
+        │       │   └── istio_loki.json
+        │       ├── kustomization.yaml
+        │       ├── values.yaml
+        │       └── virtual-service.yaml
+        │   ├── loki.yaml
+        │   ├── mimir.yaml
+        │   ├── open-telemetry
+        │       └── collector.yaml
+        │   ├── tempo.yaml
+        │   └── test-app
+        │       ├── deploy.yaml
+        │       ├── kustomization.yaml
+        │       ├── service-monitor.yaml
+        │       ├── service.yaml
+        │       └── virtual-service.yaml
+    ├── infra
+        ├── Makefile
+        ├── argocd.tf
+        ├── main.tf
+        ├── mimir.tf
+        ├── providers.tf
+        ├── values
+        │   ├── argocd.yaml
+        │   └── istio.yaml
+        ├── variables.tf
+        └── versions.tf
+    └── test-app
+        ├── Dockerfile
+        ├── app.py
+        └── requirements.txt
 ```
+---
 
-Argo CD itself is installed via Terraform and then bootstraps the rest of the stack using an "app of apps" pattern:
+## Components
 
-```hcl
-resource "argocd_application" "app_of_apps" {
-  depends_on = [helm_release.argocd]
-  metadata {
-    name      = "observability"
-    namespace = "argocd"
-  }
-  spec {
-    project = "default"
-    source {
-      repo_url        = var.git_argocd_repo_url
-      path            = "observability/argo/apps"
-      target_revision = "HEAD"
-    }
-    destination {
-      server    = "https://kubernetes.default.svc"
-      namespace = "observability"
-    }
-    sync_policy {
-      automated {
-        prune     = true
-        self_heal = true
-      }
-    }
-  }
-}
+### 1. Metrics
+
+- **Prometheus** (via the **kube-prometheus-stack** Helm chart)
+  - Scrapes Kubernetes metrics (node, pod, service) and Istio telemetry via `ServiceMonitor` objects.
+  - Remote-writes long-term storage into **Mimir** to offload local TSDB.  
+- **Mimir** (Grafana Mimir Distributed)
+  - Acts as a horizontally scalable, multi-tenant remote write store.
+  - Receives Prometheus’ remote write streams and persists blocks to S3.
+- **Grafana**
+  - Sidecar injects dashboards for Istio control plane and Loki.
+  - Configured with two data sources:
+    - Prometheus (via kube-prometheus-stack)
+    - Loki (Logs)
+    - Tempo (Traces)
+
+### 2. Logs
+
+- **OpenTelemetry Collector**
+  - Receives logs via OTLP HTTP/gRPC and file-log receiver.
+  - Batches and exports to **Loki** (Grafana Loki) and `debug` (local logging).
+- **Loki**
+  - Indexed, cost-effective log store; integrates tightly with Grafana.
+  - Schema and storage defined in `loki.yaml` (TSDB backend with filesystem).
+
+### 3. Tracing
+
+- **OpenTelemetry Collector**
+  - Receives spans via OTLP.
+  - Batches and forwards to **Tempo** (Grafana Tempo).
+- **Tempo**
+  - Agentless, highly scalable trace store.
+  - Generates its own metrics (via `metricsGenerator`) and remote-writes them to Mimir for end-to-end metrics in Grafana.
+
+### 4. Service Mesh Visualization
+
+- **Istio**  
+  - Provides Envoy-based service mesh instrumentation:
+    - Metrics (`envoy_*`) scraped by Prometheus.
+    - Logs (access logs) parsed by OpenTelemetry Collector.
+  - **Kiali**  
+    - Installed in `istio-system` to visualize mesh topology, metrics, and traces.
+
+### 5. Autoscaling
+
+- **KEDA** (Kubernetes Event-Driven Autoscaling)
+  - Operator and Metrics Adapter run with Istio sidecar exclusions.
+  - Scales workloads based on Prometheus metrics via a `ScaledObject` (not shown here).
+
+---
+
+## Deployment
+
+1. **Bootstrap cluster & Istio**  
+   `infra/` contains Terraform code to provision:
+   - EKS cluster
+   - Istio base, control plane, and ingress gateway
+   - Argo CD server, gateway, and "app-of-apps" application
+
+2. **GitOps with Argo CD**  
+   - The `argocd_application.app_of_apps` in Terraform targets `observability/argo/apps/`.
+   - Each sub-directory (e.g. `kube-prometheus-stack`, `loki`, `open-telemetry`, etc.) contains an Argo CD `Application` manifest to sync that component.
+
+3. **Custom Values**  
+   - All Helm value overrides live under `observability/argo/values/`.
+   - Includes dashboards, sidecar datasources, pipeline configs, and Istio annotations.
+
+4. **Test Application**  
+   - `observability/test-app` runs a FastAPI service:
+     - Instrumented with OpenTelemetry for traces and logs.
+     - Exposes Prometheus metrics on `/metrics`.
+     - Demonstrates the full pipeline: app → collector → Loki/Tempo/Prometheus → Grafana.
+
+---
+
+## How It Works
+
+1. **Instrumentation**  
+   - Services (Istio proxies, test-app) generate metrics, logs, and traces.
+2. **Collection & Aggregation**  
+   - **OpenTelemetry Collector** centralizes logs & traces and forwards to Loki/Tempo.
+   - **Prometheus** scrapes metrics and remote-writes to Mimir.
+3. **Storage**  
+   - **Loki** stores logs, optimized for high-volume unstructured data.
+   - **Tempo** stores traces in object storage/backed by index-free design.
+   - **Mimir** stores metrics blocks in S3, providing long-term retention.
+4. **Visualization**  
+   - **Grafana** dashboards present:
+     - Control plane health (Istio dashboards)
+     - Log search and streams (Loki dashboards)
+     - Trace queries and flame graphs (Tempo integration)
+     - Application metrics (Prometheus + Mimir)
+
+---
+
+## Getting Started
+
+```bash
+# Bootstrap infra
+cd observability/infra
+make init
+make apply
+
+# Sync Argo CD apps
+# (Argo CD server UI available via Istio gateway on port 80)
 ```
-
-## Applications managed by Argo CD
-
-The `argo/apps` directory contains one Argo CD `Application` for each component. Examples include:
-
-```yaml
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: kube-prometheus-stack
-  namespace: argocd
-spec:
-  project: default
-  sources:
-    - repoURL: https://github.com/henrypham67/istio
-      targetRevision: HEAD
-      path: observability/argo/values/kube-prometheus-stack
-      ref: custom
-    - repoURL: https://prometheus-community.github.io/helm-charts
-      chart: kube-prometheus-stack
-      targetRevision: 72.1.0
-      helm:
-        valueFiles:
-          - $custom/observability/argo/values/kube-prometheus-stack/values.yaml
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: monitoring
-  syncPolicy:
-    automated:
-      prune: true
-```
-
-Other applications follow the same pattern, for example Loki and the OpenTelemetry Operator:
-
-```yaml
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: loki
-  namespace: argocd
-spec:
-  project: default
-  sources:
-    - repoURL: https://grafana.github.io/helm-charts
-      chart: loki
-      targetRevision: 6.29.0
-      helm:
-        valueFiles:
-          - $custom/observability/argo/values/loki.yaml
-    - repoURL: https://github.com/henrypham67/istio
-      targetRevision: HEAD
-      ref: custom
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: logging
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-```
-
-```yaml
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: open-telemetry
-  namespace: argocd
-spec:
-  project: default
-  sources:
-    - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
-      chart: opentelemetry-operator
-      targetRevision: 0.90.4
-    - repoURL: https://github.com/henrypham67/istio
-      targetRevision: HEAD
-      path: observability/argo/values/open-telemetry
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: opentelemetry-operator-system
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-```
-
-## Collector configuration
-
-The OpenTelemetry Collector forwards logs to Loki and traces to Tempo:
-
-```yaml
-exporters:
-  otlphttp/loki:
-    endpoint: http://loki-gateway.logging.svc.cluster.local/otlp
-  otlphttp/tempo:
-    endpoint: http://tempo.monitoring.svc.cluster.local:4318
-service:
-  pipelines:
-    logs:
-      receivers:
-        - otlp
-      processors:
-        - batch
-      exporters:
-        - otlphttp/loki
-    traces:
-      receivers:
-        - otlp
-      processors:
-        - batch
-      exporters:
-        - otlphttp/tempo
-```
-
-## Purpose
-
-This environment brings together Prometheus, Loki, Tempo and other tools so that I can experiment with end-to-end observability on Kubernetes. It is not intended for production but as a sandbox for learning how these systems fit together.
 
 ## References
 - https://www.digitalocean.com/community/tutorials/how-to-build-go-executables-for-multiple-platforms-on-ubuntu-16-04

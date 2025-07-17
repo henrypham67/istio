@@ -2,6 +2,7 @@ configMapGenerator:
   - name: grafana-dashboards-set1
     files:
       - dashboards/istio_control_plane.json
+      - dashboards/fastapi-observability.json
     options:
       labels:
         grafana_dashboard: "1"

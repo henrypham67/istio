@@ -8,7 +8,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: test-app
+      purpose: test
   endpoints:
     - port: metrics        # The port name from your Service
       path: /metrics

@@ -7,7 +7,7 @@ metadata:
     app: test-app
 spec:
   selector:
-    app: test-app
+    app: app-a
   ports:
     - port: 80
       targetPort: 8080

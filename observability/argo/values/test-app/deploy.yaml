@@ -6,21 +6,90 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: test-app
+  name: app-a
   namespace: test-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: test-app
+      app: app-a
   template:
     metadata:
       labels:
-        app: test-app
+        purpose: test
+        app: app-a
     spec:
       containers:
       - name: app
-        image: hieupham0607/observability-tester:latest
+        image: ghcr.io/blueswen/fastapi-observability/app:latest
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always
+        env:
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: http://opentelemetry-collector.opentelemetry-operator-system.svc.cluster.local:4317
+        - name: OTEL_EXPORTER_OTLP_INSECURE
+          value: "true"
+        - name: OTEL_TRACES_EXPORTER
+          value: otlp
+        - name: OTEL_METRICS_EXPORTER
+          value: otlp
+        - name: OTEL_LOGS_EXPORTER
+          value: otlp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-b
+  namespace: test-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-b
+  template:
+    metadata:
+      labels:
+        purpose: test
+        app: app-b
+    spec:
+      containers:
+      - name: app
+        image: ghcr.io/blueswen/fastapi-observability/app:latest
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always
+        env:
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: http://opentelemetry-collector.opentelemetry-operator-system.svc.cluster.local:4317
+        - name: OTEL_EXPORTER_OTLP_INSECURE
+          value: "true"
+        - name: OTEL_TRACES_EXPORTER
+          value: otlp
+        - name: OTEL_METRICS_EXPORTER
+          value: otlp
+        - name: OTEL_LOGS_EXPORTER
+          value: otlp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-c
+  namespace: test-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-c
+  template:
+    metadata:
+      labels:
+        purpose: test
+        app: app-c
+    spec:
+      containers:
+      - name: app
+        image: ghcr.io/blueswen/fastapi-observability/app:latest
         ports:
         - containerPort: 8080
         imagePullPolicy: Always

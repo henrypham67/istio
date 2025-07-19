@@ -12,9 +12,9 @@ spec:
     - match:
         - port: 8080
           uri:
-            regex: ^/app-a/(.*)
+            prefix: /app-a/
       rewrite:
-        uri: /$1
+        uri: /
       route:
         - destination:
             host: test-app.test-app.svc.cluster.local

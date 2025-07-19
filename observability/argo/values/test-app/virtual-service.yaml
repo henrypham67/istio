@@ -12,7 +12,7 @@ spec:
     - match:
         - port: 8080
           uri:
-            prefix: /app-a/
+            regex: ^/app-a(?:/(.*))?$
       rewrite:
         uri: /
       route:

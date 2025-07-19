@@ -10,5 +10,5 @@ spec:
     app: app-a
   ports:
     - port: 80
-      targetPort: 8080
+      targetPort: 8000
       name: metrics

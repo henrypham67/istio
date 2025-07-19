@@ -24,7 +24,7 @@ grafana:
       user: ''
       database: ''
       basicAuth: false
-      isDefault: true
+      isDefault: false
       jsonData:
         exemplarTraceIdDestinations:
           - datasourceUid: tempo

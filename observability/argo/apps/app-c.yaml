@@ -59,8 +59,11 @@ spec:
               path: /metadata/name
               value: app-c
             - op: replace
-              path: /spec/http/0/match/0/uri/regex
-              value: ^/app-c(?:/(.*))?$
+              path: /spec/http/0/match/0/uri/prefix
+              value: /app-c/
+            - op: replace
+              path: /spec/http/0/match/1/uri/prefix
+              value: /app-c
             - op: replace
               path: /spec/http/0/route/0/destination/host
               value: app-c.test-app.svc.cluster.local

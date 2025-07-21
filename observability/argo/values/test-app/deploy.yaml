@@ -1,23 +1,16 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: test-app
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app-a
-  namespace: test-app
+  name: test-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: app-a
+      app: test-app
   template:
     metadata:
       labels:
-        purpose: test
-        app: app-a
+        app: test-app
     spec:
       containers:
       - name: app
@@ -26,81 +19,15 @@ spec:
         - containerPort: 8000
         imagePullPolicy: Always
         env:
-        - name: OTEL_EXPORTER_OTLP_ENDPOINT
-          value: http://opentelemetry-collector.opentelemetry-operator-system.svc.cluster.local:4317
-        - name: OTEL_EXPORTER_OTLP_INSECURE
-          value: "true"
-        - name: OTEL_TRACES_EXPORTER
-          value: otlp
-        - name: OTEL_METRICS_EXPORTER
-          value: otlp
-        - name: OTEL_LOGS_EXPORTER
-          value: otlp
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: app-b
-  namespace: test-app
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: app-b
-  template:
-    metadata:
-      labels:
-        purpose: test
-        app: app-b
-    spec:
-      containers:
-      - name: app
-        image: ghcr.io/blueswen/fastapi-observability/app:latest
-        ports:
-        - containerPort: 8080
-        imagePullPolicy: Always
-        env:
-        - name: OTEL_EXPORTER_OTLP_ENDPOINT
-          value: http://opentelemetry-collector.opentelemetry-operator-system.svc.cluster.local:4317
-        - name: OTEL_EXPORTER_OTLP_INSECURE
-          value: "true"
-        - name: OTEL_TRACES_EXPORTER
-          value: otlp
-        - name: OTEL_METRICS_EXPORTER
-          value: otlp
-        - name: OTEL_LOGS_EXPORTER
-          value: otlp
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: app-c
-  namespace: test-app
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: app-c
-  template:
-    metadata:
-      labels:
-        purpose: test
-        app: app-c
-    spec:
-      containers:
-      - name: app
-        image: ghcr.io/blueswen/fastapi-observability/app:latest
-        ports:
-        - containerPort: 8080
-        imagePullPolicy: Always
-        env:
-        - name: OTEL_EXPORTER_OTLP_ENDPOINT
-          value: http://opentelemetry-collector.opentelemetry-operator-system.svc.cluster.local:4317
-        - name: OTEL_EXPORTER_OTLP_INSECURE
-          value: "true"
-        - name: OTEL_TRACES_EXPORTER
-          value: otlp
-        - name: OTEL_METRICS_EXPORTER
-          value: otlp
-        - name: OTEL_LOGS_EXPORTER
-          value: otlp
+          - name: OTLP_GRPC_ENDPOINT
+            value:
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: http://opentelemetry-collector.opentelemetry-operator-system.svc.cluster.local:4317
+          - name: OTEL_EXPORTER_OTLP_INSECURE
+            value: "true"
+          - name: OTEL_TRACES_EXPORTER
+            value: otlp
+          - name: OTEL_METRICS_EXPORTER
+            value: otlp
+          - name: OTEL_LOGS_EXPORTER
+            value: otlp

@@ -70,7 +70,7 @@ spec:
             group: monitoring.coreos.com
             version: v1
             kind: ServiceMonitor
-            name: app-b
+            name: test-app
           patch: |-
             - op: replace
               path: /metadata/name

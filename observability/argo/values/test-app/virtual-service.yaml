@@ -11,9 +11,9 @@ spec:
     - match:
         - port: 8080
           uri:
-            regex: ^/test-app(?:/(?P<path>.*))?$
+            regex: ^/test-app(/.*)?$
       rewrite:
-        uri: /${path}
+        uri: "$1"
       route:
         - destination:
             host: test-app.test-app.svc.cluster.local

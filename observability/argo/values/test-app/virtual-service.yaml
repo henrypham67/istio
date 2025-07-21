@@ -13,7 +13,7 @@ spec:
           uri:
             regex: ^/app-a/?$
       rewrite:
-        uri: /
+        uri: $1
       route:
         - destination:
             host: test-app.test-app.svc.cluster.local

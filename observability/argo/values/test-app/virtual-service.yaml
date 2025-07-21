@@ -14,7 +14,7 @@ spec:
             prefix: /test-app/
         - port: 8080
           uri:
-            prefix: /app-a
+            prefix: /test-app
       rewrite:
         uri: /
       route:

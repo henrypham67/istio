@@ -20,14 +20,4 @@ spec:
         imagePullPolicy: Always
         env:
           - name: OTLP_GRPC_ENDPOINT
-            value:
-          - name: OTEL_EXPORTER_OTLP_ENDPOINT
-            value: http://opentelemetry-collector.opentelemetry-operator-system.svc.cluster.local:4317
-          - name: OTEL_EXPORTER_OTLP_INSECURE
-            value: "true"
-          - name: OTEL_TRACES_EXPORTER
-            value: otlp
-          - name: OTEL_METRICS_EXPORTER
-            value: otlp
-          - name: OTEL_LOGS_EXPORTER
-            value: otlp
+            value: http://tempo.monitoring.svc.cluster.local:4317

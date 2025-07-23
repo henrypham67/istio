@@ -25,33 +25,38 @@ spec:
               kubernetes_sd_configs:
                 - role: pod
       filelog:
-        include: ["/var/log/pods/*.log"]
+        include: ["/var/log/pods/**/*.log"]
     processors:
       batch:
         timeout: 5s
+      attributes:
+        actions:
+          - key: "environment"
+            value: "development"
+            action: insert
+          - key: "from"
+            value: "open-telemetry"
+            action: insert
     exporters:
       loki:
         endpoint: http://loki.logging.svc.cluster.local:3100/loki/api/v1/push
       otlphttp/tempo:
         endpoint: http://tempo.monitoring.svc.cluster.local:4318
+      prometheus:
+        endpoint: http://mimir-nginx.monitoring.svc.cluster.local
       debug:
 
     service:
       pipelines:
-        logs:
-          receivers: 
-            - otlp
-            - filelog
-          processors: 
-            - batch
-          exporters: 
-            - loki
-            - debug
         traces:
-          receivers: 
-            - otlp
-          processors: 
-            - batch
-          exporters: 
-            - otlphttp/tempo
-            - debug
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlphttp/tempo, debug]
+        metrics:
+          receivers: [otlp, prometheus]
+          processors: [batch]
+          exporters: [prometheus, debug]
+        logs:
+          receivers: [otlp, filelog]
+          processors: [batch]
+          exporters: [loki, debug]

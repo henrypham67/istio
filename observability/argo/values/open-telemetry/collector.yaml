@@ -43,7 +43,7 @@ spec:
       otlphttp/tempo:
         endpoint: http://tempo.monitoring.svc.cluster.local:4318
       prometheus:
-        endpoint: http://mimir-nginx.monitoring.svc.cluster.local
+        endpoint: http://mimir-nginx.monitoring.svc.cluster.local:80
       debug:
 
     service:

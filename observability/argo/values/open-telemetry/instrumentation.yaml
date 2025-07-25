@@ -13,16 +13,14 @@ spec:
     argument: "1"
   python:
     env:
-      # Required if endpoint is set to 4317.
-      # Python (same as Go) autoinstrumentation uses http/proto by default
-      # so data must be sent to 4318 instead of 4317.
+      # enable log auto‑instrumentation
+      - name: OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED
+        value: "true"
+      # send logs via OTLP over HTTP/protobuf
+      - name: OTEL_EXPORTER_OTLP_PROTOCOL
+        value: http/protobuf
+      # your existing endpoint var
       - name: OTEL_EXPORTER_OTLP_ENDPOINT
         value: http://opentelemetry-collector.opentelemetry-operator-system.svc.cluster.local:4318
-      - name: OTEL_PYTHON_LOG_FORMAT
-        value: ^(?P<time>\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2},\d{3}) (?P<message>(?s:.*))$$
-      - name: OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED
-        value: 'true'
       - name: OTEL_LOGS_EXPORTER
         value: otlp
-      - name: OTEL_SERVICE_NAME
-        value: test-app

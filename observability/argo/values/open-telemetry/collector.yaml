@@ -59,10 +59,6 @@ spec:
           receivers: [otlp]
           processors: [batch]
           exporters: [otlphttp/tempo, debug]
-        metrics:
-          receivers: [otlp, prometheus]
-          processors: [batch]
-          exporters: [otlphttp/metrics, debug]
         logs:
           receivers: [otlp, filelog]
           processors: [batch]

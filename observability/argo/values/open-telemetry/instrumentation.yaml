@@ -24,3 +24,5 @@ spec:
         value: 'true'
       - name: OTEL_LOGS_EXPORTER
         value: otlp
+      - name: OTEL_SERVICE_NAME
+        value: test-app

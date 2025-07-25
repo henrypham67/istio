@@ -17,7 +17,7 @@ spec:
       # Python (same as Go) autoinstrumentation uses http/proto by default
       # so data must be sent to 4318 instead of 4317.
       - name: OTEL_EXPORTER_OTLP_ENDPOINT
-        value: http://opentelemetry-collector:4318
+        value: http://opentelemetry-collector.opentelemetry-operator-system.svc.cluster.local:4318
       - name: OTEL_PYTHON_LOG_FORMAT
         value: ^(?P<time>\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2},\d{3}) (?P<message>(?s:.*))$$
       - name: OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED

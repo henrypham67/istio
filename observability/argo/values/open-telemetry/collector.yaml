@@ -34,6 +34,11 @@ spec:
       batch:
         send_batch_size: 10000
         timeout: 10s
+      k8sattributes:
+        auth_type: serviceAccount
+        extract:
+          metadata:
+            labels: [app]
       attributes:
         actions:
           - key: "environment"
@@ -57,9 +62,9 @@ spec:
       pipelines:
         traces:
           receivers: [otlp]
-          processors: [batch]
+          processors: [batch, memory_limiter, attributes]
           exporters: [otlphttp/tempo, debug]
         logs:
-          receivers: [otlp, filelog]
-          processors: [batch]
+          receivers: [otlp]
+          processors: [batch, attributes, k8sattributes]
           exporters: [loki, debug]

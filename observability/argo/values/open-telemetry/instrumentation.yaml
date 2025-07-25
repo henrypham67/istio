@@ -1,0 +1,26 @@
+apiVersion: opentelemetry.io/v1alpha1
+kind: Instrumentation
+metadata:
+  name: test-app-instrumentation
+spec:
+  exporter:
+    endpoint: http://opentelemetry-collector:4317
+  propagators:
+    - tracecontext
+    - baggage
+  sampler:
+    type: parentbased_traceidratio
+    argument: "1"
+  python:
+    env:
+      # Required if endpoint is set to 4317.
+      # Python (same as Go) autoinstrumentation uses http/proto by default
+      # so data must be sent to 4318 instead of 4317.
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://opentelemetry-collector:4318
+      - name: OTEL_PYTHON_LOG_FORMAT
+        value: ^(?P<time>\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2},\d{3}) (?P<message>(?s:.*))$$
+      - name: OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED
+        value: 'true'
+      - name: OTEL_LOGS_EXPORTER
+        value: otlp

@@ -1,0 +1,3 @@
+manager:
+  extraArgs:
+    - --enable-python-instrumentation=true

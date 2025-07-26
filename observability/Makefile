@@ -18,6 +18,8 @@ plan: ## Show Terraform plan
 apply: ## Apply Terraform changes
 	cd infra && terraform apply -auto-approve
 
+up: clean init validate apply
+
 fmt: ## Format Terraform code
 	cd infra && terraform fmt -recursive
 
@@ -31,6 +33,8 @@ destroy: ## Destroy Terraform-managed infrastructure
 clean: ## Remove local Terraform state & cache
 	cd infra && rm -rf .terraform
 	cd infra && rm -f terraform.tfstate* .terraform.lock.hcl
+
+down: destroy clean
 
 get-kubeconfig: ## Get kubeconfig for EKS cluster
 	@if [ -f kubeconfig ]; then \

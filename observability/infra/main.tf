@@ -5,7 +5,7 @@ module "cluster" {
   vpc_cidr = "10.1.0.0/16"
 
   desired_nodes = 6
-  max_nodes = 6
+  max_nodes     = 6
 }
 
 resource "helm_release" "istio_base" {

@@ -20,6 +20,10 @@ spec:
         ports:
         - containerPort: 8000
         imagePullPolicy: Always
+        command:
+          - opentelemetry-instrument
+          - python
+          - main.py
         env:
           - name: OTLP_GRPC_ENDPOINT
             value: http://tempo.monitoring.svc.cluster.local:4317

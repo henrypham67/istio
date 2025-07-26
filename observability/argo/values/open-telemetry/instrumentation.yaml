@@ -16,11 +16,6 @@ spec:
       # enable log auto‑instrumentation
       - name: OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED
         value: "true"
-      # send logs via OTLP over HTTP/protobuf
-      - name: OTEL_EXPORTER_OTLP_PROTOCOL
-        value: http/protobuf
       # your existing endpoint var
       - name: OTEL_EXPORTER_OTLP_ENDPOINT
         value: http://opentelemetry-collector.opentelemetry-operator-system.svc.cluster.local:4318
-      - name: OTEL_LOGS_EXPORTER
-        value: otlp

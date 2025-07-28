@@ -13,3 +13,7 @@ variable "mimir_bucket_name" {
   type        = string
   default     = "my-mimir-bucket-199907060500"
 }
+
+variable "istio_ns" {
+  default = "istio-system"
+}

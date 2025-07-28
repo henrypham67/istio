@@ -12,21 +12,21 @@ variable "vpc_cidr" {
 }
 
 variable "max_nodes" {
-  type = number
+  type    = number
   default = 5
 }
 
 variable "min_nodes" {
-  type = number
+  type    = number
   default = 2
 }
 
 variable "desired_nodes" {
-  type = number
+  type    = number
   default = 3
 }
 
 variable "instance_type" {
-  type = string
+  type    = string
   default = "t4g.medium"
 }

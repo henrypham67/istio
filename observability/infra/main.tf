@@ -4,8 +4,8 @@ module "cluster" {
   name     = var.cluster_name
   vpc_cidr = "10.1.0.0/16"
 
-  desired_nodes = 6
-  max_nodes     = 6
+  desired_nodes = 5
+  max_nodes     = 9
 }
 
 resource "helm_release" "istio_base" {
@@ -13,7 +13,7 @@ resource "helm_release" "istio_base" {
   chart            = "base"
   version          = "1.25.1"
   name             = "istio-base"
-  namespace        = "istio-system"
+  namespace        = var.istio_ns
   repository       = "https://istio-release.storage.googleapis.com/charts"
   create_namespace = true
 }
@@ -25,11 +25,12 @@ resource "helm_release" "istiod" {
   version          = "1.25.1"
   repository       = "https://istio-release.storage.googleapis.com/charts"
   name             = "istiod"
-  namespace        = "istio-system"
+  namespace        = var.istio_ns
   create_namespace = true
 
   values = [templatefile("values/istio.yaml", {
     CLUSTER_NAME = var.cluster_name
+    ISTIO_NS = var.istio_ns
   })]
 }
 
@@ -39,7 +40,7 @@ resource "helm_release" "istio_gateway" {
   version          = "1.25.1"
   repository       = "https://istio-release.storage.googleapis.com/charts"
   name             = "istio-ingress"
-  namespace        = "istio-system"
+  namespace        = var.istio_ns
   create_namespace = true
 
   values = [
@@ -93,4 +94,20 @@ resource "helm_release" "istio_gateway" {
       }
     )
   ]
+}
+
+module "mimir" {
+  source = "../../modules/mimir"
+
+  cluster_name      = var.cluster_name
+  mimir_bucket_name = var.mimir_bucket_name
+}
+
+module "argocd" {
+  source     = "../../modules/argocd"
+  depends_on = [helm_release.istio_gateway]
+
+  git_repo_url       = var.git_argocd_repo_url
+  argocd_helm_values = [file("values/argocd.yaml")]
+  istio_gateway      = helm_release.istio_gateway
 }

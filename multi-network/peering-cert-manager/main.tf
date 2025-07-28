@@ -19,7 +19,7 @@ variable "vpc_cidr_block_2" {
 }
 
 variable "vault_lb_name" {
-  type = string
+  type    = string
   default = "vault-lb"
 }
 
@@ -49,8 +49,8 @@ module "istio-1" {
   depends_on = [module.cluster_1, helm_release.vault]
   source     = "../../modules/istio"
 
-  cluster_name = var.cluster_1
-  vault_lb_name    = var.vault_lb_name
+  cluster_name  = var.cluster_1
+  vault_lb_name = var.vault_lb_name
 
   providers = {
     helm       = helm.helm_1
@@ -62,8 +62,8 @@ module "istio-2" {
   depends_on = [module.cluster_2, helm_release.vault]
   source     = "../../modules/istio"
 
-  cluster_name = var.cluster_2
-  vault_lb_name    = var.vault_lb_name
+  cluster_name  = var.cluster_2
+  vault_lb_name = var.vault_lb_name
 
   providers = {
     helm       = helm.helm_2
@@ -111,7 +111,7 @@ module "multi_cluster_app_1" {
 
 
   providers = {
-    helm    = helm.helm_1
+    helm       = helm.helm_1
     kubernetes = kubernetes.kubernetes_1
   }
 }
@@ -126,7 +126,7 @@ module "multi_cluster_app_2" {
   service_account_token                    = kubernetes_secret.istio_reader_token_1.data["token"]
 
   providers = {
-    helm    = helm.helm_2
+    helm       = helm.helm_2
     kubernetes = kubernetes.kubernetes_2
   }
 }

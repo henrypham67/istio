@@ -1,14 +1,17 @@
 configMapGenerator:
-  - name: grafana-dashboards-set1
+  - name: istio-services-grafana-dashboards
     files:
-      - dashboards/istio_control_plane.json
-      - dashboards/fastapi-observability.json
+      - dashboards/istio-extension-dashboard.json
+      - dashboards/istio-mesh-dashboard.json
+      - dashboards/istio-performance-dashboard.json
     options:
       labels:
         grafana_dashboard: "1"
-  - name: grafana-dashboards-set2
+  - name: istio-grafana-dashboards
     files:
       - dashboards/istio_loki.json
+      - dashboards/istio_control_plane.json
+      - dashboards/fastapi-observability.json
     options:
       labels:
         grafana_dashboard: "1"

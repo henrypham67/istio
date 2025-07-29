@@ -4,6 +4,7 @@ metadata:
   name: test-app
   labels:
     app: test-app
+    purpose: testing
 spec:
   selector:
     app: test-app

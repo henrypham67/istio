@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: ghcr.io/blueswen/fastapi-observability/app:latest
+        image: ghcr.io/blueswen/opentelemetry-apm/fastapi:latest
         ports:
         - containerPort: 8000
         imagePullPolicy: Always

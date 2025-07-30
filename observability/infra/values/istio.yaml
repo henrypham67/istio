@@ -2,7 +2,7 @@
 
 global:
   # Used to locate istiod.
-  istioNamespace: istio-system
+  istioNamespace: ${ISTIO_NAMESPACE}
   ##############################################################################################
   # The following values are found in other charts. To effectively modify these values, make   #
   # make sure they are consistent across your Istio helm charts                                #
@@ -39,3 +39,15 @@ global:
 istio_cni:
   enabled: true
   chained: true
+
+metrics:
+  serviceMonitor:
+    enabled: true
+    namespace: monitoring
+    labels:
+      release: kube-prometheus-stack
+  namespace: ${ISTIO_NAMESPACE}
+
+prometheusRule:
+  enabled: true
+  namespace: monitoring

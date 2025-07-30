@@ -30,7 +30,7 @@ resource "helm_release" "istiod" {
 
   values = [templatefile("values/istio.yaml", {
     CLUSTER_NAME = var.cluster_name
-    ISTIO_NS = var.istio_ns
+    ISTIO_NAMESPACE = var.istio_ns
   })]
 }
 

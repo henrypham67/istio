@@ -34,6 +34,8 @@ loki:
   storage_config:
     filesystem:
       directory: /var/loki/chunks
+  limits_config:
+    allow_structured_metadata: true
 
 chunksCache:
   allocatedMemory: 2048

@@ -59,4 +59,4 @@ spec:
         logs:
           receivers: [otlp]
           processors: [batch, attributes, k8sattributes]
-          exporters: [loki, debug]
+          exporters: [otlphttp/loki, debug]

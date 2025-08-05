@@ -47,6 +47,10 @@ spec:
             - op: replace
               path: /spec/ports/0/name
               value: tcp-800-app-a
+            - op: replace
+              path: /spec/template/spec/containers/0/env/0/value
+              value: app-a
+
 
         # 3) VirtualService (Istio)
         - target:

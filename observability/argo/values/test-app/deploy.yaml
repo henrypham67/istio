@@ -21,5 +21,7 @@ spec:
         - containerPort: 8000
         imagePullPolicy: Always
         env:
+          - name: APP_NAME
+            value: test-app
           - name: OTLP_GRPC_ENDPOINT
             value: http://tempo.monitoring.svc.cluster.local:4317

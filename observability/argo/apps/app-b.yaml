@@ -27,6 +27,9 @@ spec:
             - op: replace
               path: /spec/template/metadata/labels/app
               value: app-b
+            - op: replace
+              path: /spec/template/spec/containers/0/env/0/value
+              value: app-b
 
         # 2) Service
         - target:

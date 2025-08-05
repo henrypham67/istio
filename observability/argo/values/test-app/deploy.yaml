@@ -16,12 +16,10 @@ spec:
     spec:
       containers:
       - name: app
-        image: ghcr.io/blueswen/opentelemetry-apm/fastapi:latest
-        command:
-          - uv
-          - run
-          - python
-          - main.py
+        image: ghcr.io/blueswen/fastapi-observability/app:latest
         ports:
         - containerPort: 8000
         imagePullPolicy: Always
+        env:
+          - name: OTLP_GRPC_ENDPOINT
+            value: http://tempo.monitoring.svc.cluster.local:4317

@@ -12,11 +12,12 @@ spec:
     type: parentbased_traceidratio
     argument: "1"
   python:
-    env:
-      - name: OTEL_PYTHON_DISABLED_INSTRUMENTATIONS
-        value: logging,fastapi,asgi
-      - name: OTEL_TRACES_EXPORTER
+      - name: OTEL_METRICS_EXPORTER
         value: none
+      - name: OTEL_PYTHON_LOG_CORRELATION
+        value: "true"
+      - name: OTEL_PYTHON_LOG_LEVEL
+        value: error
       # enable log auto‑instrumentation
       - name: OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED
         value: "true"

@@ -1,4 +1,4 @@
-apiVersion: opentelemetry.io/v1alpha1
+apiVersion: opentelemetry.io/v1beta1
 kind: OpenTelemetryCollector
 metadata:
   name: opentelemetry
@@ -10,7 +10,7 @@ spec:
       port: 4317
     - name: otlp-http
       port: 4318
-  config: |
+  config:
     receivers:
       otlp:
         protocols:

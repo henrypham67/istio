@@ -42,5 +42,5 @@ spec:
           exporters: [otlphttp/tempo, debug]
         logs:
           receivers: [otlp]
-          processors: [batch, attributes]
-          exporters: [otlphttp/loki, debug]
+          processors: [batch]
+          exporters: [otlphttp/loki]

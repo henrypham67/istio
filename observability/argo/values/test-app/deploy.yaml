@@ -16,12 +16,15 @@ spec:
     spec:
       containers:
       - name: app
-        image: hieupham0607/observability-tester:latest
+        image: ghcr.io/blueswen/opentelemetry-apm/fastapi:latest
         ports:
         - containerPort: 8000
         imagePullPolicy: Always
+        command:
+          - uv
+          - run
+          - python
+          - main.py
         env:
-          - name: APP_NAME
+          - name: OTEL_SERVICE_NAME
             value: test-app
-          - name: OTLP_GRPC_ENDPOINT
-            value: http://tempo.monitoring.svc.cluster.local:4317

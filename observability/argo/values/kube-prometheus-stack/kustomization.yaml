@@ -11,7 +11,7 @@ configMapGenerator:
     files:
       - dashboards/istio_loki.json
       - dashboards/istio_control_plane.json
-      - dashboards/fastapi-observability.json
+      - dashboards/opentelemetry-apm.json
     options:
       labels:
         grafana_dashboard: "1"

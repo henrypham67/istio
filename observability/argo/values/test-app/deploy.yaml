@@ -24,7 +24,7 @@ spec:
           - uv
           - run
           - python
-          - main.pay
+          - main.py
         env:
           - name: OTEL_SERVICE_NAME
             value: test-app

@@ -15,7 +15,7 @@ spec:
     env:
       # enable log auto‑instrumentation
       - name: OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED
-        value: "true"
+        value: "false"
       # your existing endpoint var
       - name: OTEL_EXPORTER_OTLP_ENDPOINT
         value: http://opentelemetry-collector.opentelemetry-operator-system.svc.cluster.local:4318

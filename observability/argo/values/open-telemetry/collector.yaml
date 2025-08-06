@@ -1,16 +1,9 @@
-apiVersion: opentelemetry.io/v1alpha1
+apiVersion: opentelemetry.io/v1beta1
 kind: OpenTelemetryCollector
 metadata:
   name: opentelemetry
 spec:
-  mode: deployment
-  image: otel/opentelemetry-collector-contrib:latest
-  ports:
-    - name: otlp-grpc
-      port: 4317
-    - name: otlp-http
-      port: 4318
-  config: |
+  config:
     receivers:
       otlp:
         protocols:
@@ -49,5 +42,5 @@ spec:
           exporters: [otlphttp/tempo, debug]
         logs:
           receivers: [otlp]
-          processors: [batch, attributes]
-          exporters: [otlphttp/loki, debug]
+          processors: [batch]
+          exporters: [otlphttp/loki]

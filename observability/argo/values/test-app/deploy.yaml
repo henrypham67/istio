@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: ghcr.io/blueswen/fastapi-observability/app:latest
+        image: hieupham0607/observability-tester:latest
         ports:
         - containerPort: 8000
         imagePullPolicy: Always

@@ -13,6 +13,8 @@ spec:
     argument: "1"
   python:
     env:
+      - name: OTEL_PYTHON_DISABLED_INSTRUMENTATIONS
+        value: logging,fastapi,asgi
       - name: OTEL_TRACES_EXPORTER
         value: none
       # enable log auto‑instrumentation

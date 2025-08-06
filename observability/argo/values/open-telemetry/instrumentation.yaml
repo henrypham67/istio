@@ -15,10 +15,12 @@ spec:
     env:
       - name: OTEL_METRICS_EXPORTER
         value: 'none'
-      - name: OTEL_PYTHON_LOG_CORRELATION
-        value: 'true'
+      - name: OTEL_TRACE_EXPORTER
+        value: 'none'
       - name: OTEL_LOGS_EXPORTER
         value: "otlp,console"
+      - name: OTEL_PYTHON_LOG_CORRELATION
+        value: 'true'
       - name: OTEL_PYTHON_LOG_LEVEL
         value: 'info'
       - name: OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED

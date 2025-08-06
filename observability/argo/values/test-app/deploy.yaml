@@ -20,6 +20,11 @@ spec:
         ports:
         - containerPort: 8000
         imagePullPolicy: Always
+        command:
+          - uv
+          - run
+          - python
+          - main.pay
         env:
           - name: OTEL_SERVICE_NAME
             value: test-app

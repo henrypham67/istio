@@ -13,11 +13,11 @@ spec:
     argument: '1'
   python:
     - name: OTEL_METRICS_EXPORTER
-      value: none
+      value: 'none'
     - name: OTEL_PYTHON_LOG_CORRELATION
       value: 'true'
     - name: OTEL_PYTHON_LOG_LEVEL
-      value: error
+      value: 'error'
     - name: OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED
       value: 'true'
     - name: OTEL_EXPORTER_OTLP_ENDPOINT

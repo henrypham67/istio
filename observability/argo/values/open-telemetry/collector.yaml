@@ -29,7 +29,7 @@ spec:
             action: insert
     exporters:
       otlphttp/metrics:
-        endpoint: http://mimir-nginx.monitoring.svc.cluster.local/otlp
+        endpoint: http://mimir-distributor.monitoring.svc.cluster.local:8080/otlp
       otlphttp/loki:
         endpoint: http://loki.logging.svc.cluster.local:3100/otlp
       otlphttp/tempo:

@@ -52,7 +52,7 @@ spec:
         metrics:
           receivers: [spanmetrics]
           processors: [batch]
-          exporters: [otlphttp/metrics]
+          exporters: [debug, otlphttp/metrics]
         logs:
           receivers: [otlp]
           processors: [batch, attributes]

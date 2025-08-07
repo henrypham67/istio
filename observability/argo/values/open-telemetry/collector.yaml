@@ -50,7 +50,7 @@ spec:
           processors: [batch, memory_limiter, attributes]
           exporters: [otlphttp/tempo, debug, spanmetrics]
         metrics:
-          receivers: [spanmetrics]
+          receivers: [spanmetrics, otlp]
           processors: [batch]
           exporters: [debug, otlphttp/metrics]
         logs:

@@ -6,4 +6,5 @@ resources:
   - deploy.yaml
   - service.yaml
   - virtual-service.yaml
+  - cronjob.yaml
 #  - service-monitor.yaml

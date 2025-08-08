@@ -6,4 +6,5 @@ resources:
   - deploy.yaml
   - service.yaml
   - virtual-service.yaml
+  - istio-pod-monitor.yaml
 #  - service-monitor.yaml

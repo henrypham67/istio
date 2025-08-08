@@ -12,6 +12,7 @@ configMapGenerator:
       - dashboards/istio_loki.json
       - dashboards/istio_control_plane.json
       - dashboards/opentelemetry-apm.json
+      - istio-service-monitor.yaml
     options:
       labels:
         grafana_dashboard: "1"

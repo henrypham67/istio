@@ -3,6 +3,8 @@ kind: PodMonitor
 metadata:
   name: istio-proxies-monitor
   namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
 spec:
   selector:
     matchExpressions:

@@ -10,7 +10,7 @@ spec:
     matchLabels:
       purpose: testing
   endpoints:
-    - port: metrics        # The port name from your Service
+    - port: http-monitoring
       path: /metrics
       interval: 30s
   namespaceSelector:

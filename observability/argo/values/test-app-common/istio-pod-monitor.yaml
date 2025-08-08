@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: istio-proxies-monitor
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  namespaceSelector:
+    matchNames:
+      - test-app
+  selector:
+    matchExpressions:
+    - key: app
+      operator: Exists  # Targets pods with Istio sidecars
+  podMetricsEndpoints:
+  - port: http-envoy-prom  # Or specify port 15020
+    path: /stats/prometheus
+    interval: 15s

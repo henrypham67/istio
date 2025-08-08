@@ -3,7 +3,5 @@ kind: Kustomization
 
 # Reference the base directory
 resources:
-  - deploy.yaml
-  - service.yaml
-  - virtual-service.yaml
-#  - service-monitor.yaml
+  - cronjob.yaml
+  - ns.yaml

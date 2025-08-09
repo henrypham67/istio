@@ -7,7 +7,8 @@ metadata:
     release: kube-prometheus-stack
 spec:
   namespaceSelector:
-    any: true
+    matchNames:
+      - test-app
   selector:
     matchExpressions:
     - key: app

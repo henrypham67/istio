@@ -10,7 +10,7 @@ spec:
     any: true
   selector:
     matchExpressions:
-    - key: istio.io/rev
+    - key: app
       operator: Exists  # Targets pods with Istio sidecars
   podMetricsEndpoints:
   - port: http-envoy-prom  # Or specify port 15020

@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: false-vs
+spec:
+  hosts:
+  - "nonexistent-service" # Invalid service
+  http:
+    - route:
+      - destination:
+          host: nonexistent-service
+          port:
+            number: 9999 # Invalid port

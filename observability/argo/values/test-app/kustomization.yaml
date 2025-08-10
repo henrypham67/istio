@@ -6,4 +6,5 @@ resources:
   - deploy.yaml
   - service.yaml
   - virtual-service.yaml
+  - false-vs.yaml
 #  - service-monitor.yaml

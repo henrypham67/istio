@@ -18,15 +18,11 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 6,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -35,19 +31,14 @@
       },
       "id": 21,
       "panels": [],
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Performance Dashboard Notes",
       "type": "row"
     },
     {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 6,
         "w": 24,
@@ -55,7 +46,6 @@
         "y": 1
       },
       "id": 19,
-      "links": [],
       "options": {
         "code": {
           "language": "plaintext",
@@ -65,17 +55,13 @@
         "content": "The charts on this dashboard are intended to show Istio main components cost in terms of resources utilization under steady load.\n\n- **vCPU / 1k rps:** shows vCPU utilization by the main Istio components normalized by 1000 requests/second. When idle or low traffic, this chart will be blank. The curve for istio-proxy refers to the services sidecars only.\n- **vCPU:** vCPU utilization by Istio components, not normalized.\n- **Memory:** memory footprint for the components. Telemetry and policy are normalized by 1k rps, and no data is shown  when there is no traffic. For ingress and istio-proxy, the data is per instance.\n- **Bytes transferred / sec:** shows the number of bytes flowing through each Istio component.\n\n\n",
         "mode": "markdown"
       },
-      "pluginVersion": "10.1.5",
+      "pluginVersion": "11.6.1",
       "title": "Performance Dashboard README",
       "transparent": true,
       "type": "text"
     },
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -84,15 +70,6 @@
       },
       "id": 6,
       "panels": [],
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "vCPU Usage",
       "type": "row"
     },
@@ -107,11 +84,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -142,8 +121,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -162,7 +140,6 @@
         "y": 8
       },
       "id": 4,
-      "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -171,11 +148,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "10.1.5",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -215,11 +193,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -250,8 +230,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -270,7 +249,6 @@
         "y": 8
       },
       "id": 7,
-      "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -279,21 +257,24 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "10.1.5",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(rate(container_cpu_usage_seconds_total{pod=~\"istio-ingressgateway-.*\",container=\"istio-proxy\"}[$__rate_interval]))",
+          "editorMode": "code",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{pod=~\"istio-ingress-.*\",container=\"istio-proxy\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "istio-ingressgateway",
+          "range": true,
           "refId": "A"
         },
         {
@@ -313,10 +294,6 @@
     },
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -325,15 +302,6 @@
       },
       "id": 13,
       "panels": [],
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Memory and Data Rates",
       "type": "row"
     },
@@ -348,11 +316,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -383,8 +353,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -403,7 +372,6 @@
         "y": 17
       },
       "id": 902,
-      "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -412,21 +380,24 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "10.1.5",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(container_memory_working_set_bytes{pod=~\"istio-ingressgateway-.*\"}) / count(container_memory_working_set_bytes{pod=~\"istio-ingressgateway-.*\",container!=\"POD\"})",
+          "editorMode": "code",
+          "expr": "sum(container_memory_working_set_bytes{pod=~\"istio-ingress-.*\"}) / count(container_memory_working_set_bytes{pod=~\"istio-ingress-.*\",container!=\"POD\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "per istio-ingressgateway",
+          "range": true,
           "refId": "A"
         },
         {
@@ -455,11 +426,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -490,8 +463,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -510,7 +482,6 @@
         "y": 17
       },
       "id": 11,
-      "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -519,21 +490,24 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "10.1.5",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "sum(irate(istio_response_bytes_sum{source_workload=\"istio-ingressgateway\", reporter=\"source\"}[$__rate_interval]))",
+          "editorMode": "code",
+          "expr": "sum(irate(istio_response_bytes_sum{source_workload=\"istio-ingress\", reporter=\"source\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "istio-ingressgateway",
+          "range": true,
           "refId": "A"
         },
         {
@@ -553,10 +527,6 @@
     },
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -565,15 +535,6 @@
       },
       "id": 17,
       "panels": [],
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Istio Component Versions",
       "type": "row"
     },
@@ -588,11 +549,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -623,8 +586,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -634,7 +596,32 @@
           },
           "unit": "short"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "pilot: 1.25.1"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -643,7 +630,6 @@
         "y": 26
       },
       "id": 15,
-      "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -652,11 +638,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "10.1.5",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -675,10 +662,6 @@
     },
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -687,15 +670,6 @@
       },
       "id": 71,
       "panels": [],
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Proxy Resource Usage",
       "type": "row"
     },
@@ -710,11 +684,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -745,8 +721,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -765,7 +740,6 @@
         "y": 35
       },
       "id": 72,
-      "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -774,11 +748,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "10.1.5",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -808,11 +783,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -843,8 +820,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -863,7 +839,6 @@
         "y": 35
       },
       "id": 73,
-      "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -872,11 +847,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "10.1.5",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -906,11 +882,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -941,8 +919,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -961,7 +938,6 @@
         "y": 35
       },
       "id": 702,
-      "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -970,11 +946,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "10.1.5",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -994,10 +971,6 @@
     },
     {
       "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${datasource}"
-      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -1006,15 +979,6 @@
       },
       "id": 69,
       "panels": [],
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${datasource}"
-          },
-          "refId": "A"
-        }
-      ],
       "title": "Istiod Resource Usage",
       "type": "row"
     },
@@ -1029,11 +993,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -1064,8 +1030,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1084,7 +1049,6 @@
         "y": 43
       },
       "id": 5,
-      "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -1093,18 +1057,20 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "10.1.5",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "process_virtual_memory_bytes{app=\"istiod\"}",
+          "editorMode": "code",
+          "expr": "process_virtual_memory_bytes{job=\"istiod\"}",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 2,
@@ -1117,7 +1083,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "process_resident_memory_bytes{app=\"istiod\"}",
+          "expr": "process_resident_memory_bytes{job=\"istiod\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Resident Memory",
@@ -1129,7 +1095,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "go_memstats_heap_sys_bytes{app=\"istiod\"}",
+          "expr": "go_memstats_heap_sys_bytes{job=\"istiod\"}",
           "format": "time_series",
           "hide": true,
           "intervalFactor": 2,
@@ -1141,7 +1107,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "go_memstats_heap_alloc_bytes{app=\"istiod\"}",
+          "expr": "go_memstats_heap_alloc_bytes{job=\"istiod\"}",
           "format": "time_series",
           "hide": true,
           "intervalFactor": 2,
@@ -1153,7 +1119,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "go_memstats_alloc_bytes{app=\"istiod\"}",
+          "expr": "go_memstats_alloc_bytes{job=\"istiod\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Alloc",
@@ -1165,7 +1131,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "go_memstats_heap_inuse_bytes{app=\"istiod\"}",
+          "expr": "go_memstats_heap_inuse_bytes{job=\"istiod\"}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -1178,7 +1144,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "go_memstats_stack_inuse_bytes{app=\"istiod\"}",
+          "expr": "go_memstats_stack_inuse_bytes{job=\"istiod\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Stack in-use",
@@ -1226,11 +1192,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -1261,8 +1229,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1281,7 +1248,6 @@
         "y": 43
       },
       "id": 602,
-      "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -1290,11 +1256,12 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "10.1.5",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -1327,7 +1294,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "irate(process_cpu_seconds_total{app=\"istiod\"}[$__rate_interval])",
+          "expr": "irate(process_cpu_seconds_total{job=\"istiod\"}[$__rate_interval])",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -1350,11 +1317,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -1385,8 +1354,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1405,7 +1373,6 @@
         "y": 43
       },
       "id": 74,
-      "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -1414,18 +1381,19 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "10.1.5",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "process_open_fds{app=\"istiod\"}",
+          "expr": "process_open_fds{job=\"istiod\"}",
           "format": "time_series",
           "hide": true,
           "instant": false,
@@ -1461,11 +1429,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -1496,8 +1466,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1516,7 +1485,6 @@
         "y": 43
       },
       "id": 402,
-      "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -1525,21 +1493,24 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "10.1.5",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "go_goroutines{app=\"istiod\"}",
+          "editorMode": "code",
+          "expr": "go_goroutines{job=\"istiod\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Number of Goroutines",
+          "range": true,
           "refId": "A",
           "step": 2
         }
@@ -1548,23 +1519,19 @@
       "type": "timeseries"
     }
   ],
+  "preload": false,
   "refresh": "",
-  "schemaVersion": 38,
-  "style": "dark",
+  "schemaVersion": 41,
   "tags": [],
   "templating": {
     "list": [
       {
-        "hide": 0,
         "includeAll": false,
-        "multi": false,
         "name": "datasource",
         "options": [],
         "query": "prometheus",
-        "queryValue": "",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "type": "datasource"
       }
     ]
@@ -1583,21 +1550,10 @@
       "1h",
       "2h",
       "1d"
-    ],
-    "time_options": [
-      "5m",
-      "15m",
-      "1h",
-      "6h",
-      "12h",
-      "24h",
-      "2d",
-      "7d",
-      "30d"
     ]
   },
   "timezone": "",
   "title": "Istio Performance Dashboard",
-  "version": 1,
-  "weekStart": ""
+  "uid": "beun2uv7u2ku8f",
+  "version": 1
 }

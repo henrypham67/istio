@@ -1,42 +1,26 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "prometheus",
-      "pluginName": "Prometheus"
-    }
-  ],
-  "__requires": [
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "6.4.3"
-    },
-    {
-      "type": "panel",
-      "id": "graph",
-      "name": "Graph",
-      "version": ""
-    },
-    {
-      "type": "datasource",
-      "id": "prometheus",
-      "name": "Prometheus",
-      "version": "5.0.0"
-    },
-    {
-      "type": "panel",
-      "id": "table",
-      "name": "Table",
-      "version": ""
-    }
-  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
   "description": "Istio Control Plane Dashboard version 1.24.6",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
+  "id": 38,
+  "links": [],
   "panels": [
     {
       "collapsed": false,
@@ -59,12 +43,57 @@
       "description": "Version number of each running instance",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "hue",
-            "showPoints": "never"
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
           }
-        }
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 5,
@@ -77,10 +106,17 @@
       "options": {
         "legend": {
           "calcs": [],
-          "displayMode": "list"
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
-      "pluginVersion": "v11.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -88,7 +124,8 @@
             "uid": "$datasource"
           },
           "expr": "sum by (tag) (istio_build{component=\"pilot\"})",
-          "legendFormat": "Version ({{tag}})"
+          "legendFormat": "Version ({{tag}})",
+          "refId": "A"
         }
       ],
       "title": "Pilot Versions",
@@ -100,7 +137,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 1
+        "y": 6
       },
       "id": 3,
       "panels": [],
@@ -115,19 +152,64 @@
       "description": "Memory usage of each running instance",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "hue",
-            "showPoints": "never"
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
           },
           "unit": "bytes"
-        }
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 10,
         "w": 6,
         "x": 0,
-        "y": 2
+        "y": 7
       },
       "id": 4,
       "interval": "5s",
@@ -137,10 +219,17 @@
             "last",
             "max"
           ],
-          "displayMode": "table"
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
-      "pluginVersion": "v11.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -148,31 +237,35 @@
             "uid": "$datasource"
           },
           "expr": "sum by (pod) (container_memory_working_set_bytes{container=\"discovery\",pod=~\"istiod-.*\"})",
-          "legendFormat": "Container ({{pod}})"
+          "legendFormat": "Container ({{pod}})",
+          "refId": "A"
         },
         {
           "datasource": {
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "sum by (pod) (go_memstats_stack_inuse_bytes{app=\"istiod\"})",
-          "legendFormat": "Stack ({{pod}})"
+          "expr": "sum by (pod) (go_memstats_stack_inuse_bytes{job=\"istiod\"})",
+          "legendFormat": "Stack ({{pod}})",
+          "refId": "B"
         },
         {
           "datasource": {
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "sum by (pod) (go_memstats_heap_inuse_bytes{app=\"istiod\"})",
-          "legendFormat": "Heap (In Use) ({{pod}})"
+          "expr": "sum by (pod) (go_memstats_heap_inuse_bytes{job=\"istiod\"})",
+          "legendFormat": "Heap (In Use) ({{pod}})",
+          "refId": "C"
         },
         {
           "datasource": {
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "sum by (pod) (go_memstats_heap_alloc_bytes{app=\"istiod\"})",
-          "legendFormat": "Heap (Allocated) ({{pod}})"
+          "expr": "sum by (pod) (go_memstats_heap_alloc_bytes{job=\"istiod\"})",
+          "legendFormat": "Heap (Allocated) ({{pod}})",
+          "refId": "D"
         }
       ],
       "title": "Memory Usage",
@@ -186,10 +279,54 @@
       "description": "Details about memory allocations",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "hue",
-            "showPoints": "never"
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
           },
           "unit": "Bps"
         },
@@ -216,7 +353,7 @@
         "h": 10,
         "w": 6,
         "x": 6,
-        "y": 2
+        "y": 7
       },
       "id": 5,
       "interval": "5s",
@@ -226,26 +363,39 @@
             "last",
             "max"
           ],
-          "displayMode": "table"
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
-      "pluginVersion": "v11.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "sum by (pod) (rate(go_memstats_alloc_bytes_total{app=\"istiod\"}[$__rate_interval]))",
-          "legendFormat": "Bytes ({{pod}})"
+          "editorMode": "code",
+          "expr": "sum by (pod) (rate(go_memstats_alloc_bytes_total{job=\"istiod\"}[$__rate_interval]))",
+          "legendFormat": "Bytes ({{pod}})",
+          "range": true,
+          "refId": "A"
         },
         {
           "datasource": {
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "sum by (pod) (rate(go_memstats_mallocs_total{app=\"istiod\"}[$__rate_interval]))",
-          "legendFormat": "Objects ({{pod}})"
+          "editorMode": "code",
+          "expr": "sum by (pod) (rate(go_memstats_mallocs_total{job=\"istiod\"}[$__rate_interval]))",
+          "legendFormat": "Objects ({{pod}})",
+          "range": true,
+          "refId": "B"
         }
       ],
       "title": "Memory Allocations",
@@ -259,18 +409,63 @@
       "description": "CPU usage of each running instance",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "hue",
-            "showPoints": "never"
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
           }
-        }
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 10,
         "w": 6,
         "x": 12,
-        "y": 2
+        "y": 7
       },
       "id": 6,
       "interval": "5s",
@@ -280,10 +475,17 @@
             "last",
             "max"
           ],
-          "displayMode": "table"
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
-      "pluginVersion": "v11.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -291,7 +493,8 @@
             "uid": "$datasource"
           },
           "expr": "sum by (pod) (irate(container_cpu_usage_seconds_total{container=\"discovery\",pod=~\"istiod-.*\"}[$__rate_interval]))",
-          "legendFormat": "Container ({{pod}})"
+          "legendFormat": "Container ({{pod}})",
+          "refId": "A"
         }
       ],
       "title": "CPU Usage",
@@ -305,18 +508,63 @@
       "description": "Goroutine count for each running instance",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "hue",
-            "showPoints": "never"
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
           }
-        }
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 2
+        "y": 7
       },
       "id": 7,
       "interval": "5s",
@@ -326,18 +574,28 @@
             "last",
             "max"
           ],
-          "displayMode": "table"
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
-      "pluginVersion": "v11.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "sum by (pod) (go_goroutines{app=\"istiod\"})",
-          "legendFormat": "Goroutines ({{pod}})"
+          "editorMode": "code",
+          "expr": "sum by (pod) (go_goroutines{job=\"istiod\"})",
+          "legendFormat": "Goroutines ({{pod}})",
+          "range": true,
+          "refId": "A"
         }
       ],
       "title": "Goroutines",
@@ -349,7 +607,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 3
+        "y": 17
       },
       "id": 8,
       "panels": [],
@@ -363,14 +621,54 @@
       },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "bars",
             "fillOpacity": 100,
             "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
             "showPoints": "never",
+            "spanNulls": false,
             "stacking": {
+              "group": "A",
               "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
           },
           "unit": "ops"
         },
@@ -513,17 +811,24 @@
         "h": 10,
         "w": 8,
         "x": 0,
-        "y": 4
+        "y": 18
       },
       "id": 9,
       "interval": "15s",
       "options": {
         "legend": {
           "calcs": [],
-          "displayMode": "list"
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
-      "pluginVersion": "v11.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -531,7 +836,8 @@
             "uid": "$datasource"
           },
           "expr": "sum by (type) (irate(pilot_xds_pushes[$__rate_interval]))",
-          "legendFormat": "{{type}}"
+          "legendFormat": "{{type}}",
+          "refId": "A"
         }
       ],
       "title": "XDS Pushes",
@@ -545,18 +851,63 @@
       "description": "Size of each xDS push.\n",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "hue",
-            "showPoints": "never"
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
           }
-        }
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 10,
         "w": 8,
         "x": 8,
-        "y": 4
+        "y": 18
       },
       "id": 10,
       "interval": "5s",
@@ -566,10 +917,17 @@
             "last",
             "max"
           ],
-          "displayMode": "table"
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
-      "pluginVersion": "v11.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -577,7 +935,8 @@
             "uid": "$datasource"
           },
           "expr": "sum by (type,event) (rate(pilot_k8s_reg_events[$__rate_interval]))",
-          "legendFormat": "{{event}} {{type}}"
+          "legendFormat": "{{event}} {{type}}",
+          "refId": "A"
         },
         {
           "datasource": {
@@ -585,7 +944,8 @@
             "uid": "$datasource"
           },
           "expr": "sum by (type,event) (rate(pilot_k8s_cfg_events[$__rate_interval]))",
-          "legendFormat": "{{event}} {{type}}"
+          "legendFormat": "{{event}} {{type}}",
+          "refId": "B"
         },
         {
           "datasource": {
@@ -593,7 +953,8 @@
             "uid": "$datasource"
           },
           "expr": "sum by (type) (rate(pilot_push_triggers[$__rate_interval]))",
-          "legendFormat": "Push {{type}}"
+          "legendFormat": "Push {{type}}",
+          "refId": "C"
         }
       ],
       "title": "Events",
@@ -607,18 +968,63 @@
       "description": "Total number of XDS connections\n",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "hue",
-            "showPoints": "never"
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
           }
-        }
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 10,
         "w": 8,
         "x": 16,
-        "y": 4
+        "y": 18
       },
       "id": 11,
       "interval": "5s",
@@ -628,10 +1034,17 @@
             "last",
             "max"
           ],
-          "displayMode": "table"
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
-      "pluginVersion": "v11.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -639,7 +1052,8 @@
             "uid": "$datasource"
           },
           "expr": "sum(envoy_cluster_upstream_cx_active{cluster_name=\"xds-grpc\"})",
-          "legendFormat": "Connections (client reported)"
+          "legendFormat": "Connections (client reported)",
+          "refId": "A"
         },
         {
           "datasource": {
@@ -647,7 +1061,8 @@
             "uid": "$datasource"
           },
           "expr": "sum (pilot_xds)",
-          "legendFormat": "Connections (server reported)"
+          "legendFormat": "Connections (server reported)",
+          "refId": "B"
         }
       ],
       "title": "Connections",
@@ -661,18 +1076,63 @@
       "description": "Number of push errors. Many of these are at least potentional fatal and should be explored in-depth via Istiod logs.\nNote: metrics here do not use rate() to avoid missing transition from \"No series\"; series are not reported if there are no errors at all.\n",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "hue",
-            "showPoints": "never"
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
           }
-        }
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 10,
         "w": 8,
         "x": 0,
-        "y": 14
+        "y": 28
       },
       "id": 12,
       "interval": "5s",
@@ -682,10 +1142,17 @@
             "last",
             "max"
           ],
-          "displayMode": "table"
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
-      "pluginVersion": "v11.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -693,7 +1160,8 @@
             "uid": "$datasource"
           },
           "expr": "sum by (type) (pilot_total_xds_rejects)",
-          "legendFormat": "Rejected Config ({{type}})"
+          "legendFormat": "Rejected Config ({{type}})",
+          "refId": "A"
         },
         {
           "datasource": {
@@ -701,7 +1169,8 @@
             "uid": "$datasource"
           },
           "expr": "pilot_total_xds_internal_errors",
-          "legendFormat": "Internal Errors"
+          "legendFormat": "Internal Errors",
+          "refId": "B"
         },
         {
           "datasource": {
@@ -709,7 +1178,8 @@
             "uid": "$datasource"
           },
           "expr": "pilot_xds_push_context_errors",
-          "legendFormat": "Push Context Errors"
+          "legendFormat": "Push Context Errors",
+          "refId": "C"
         }
       ],
       "title": "Push Errors",
@@ -721,15 +1191,31 @@
         "uid": "-- Mixed --"
       },
       "description": "Count of active and pending proxies managed by each instance.\nPending is expected to converge to zero.\n",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          }
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 10,
         "w": 8,
         "x": 8,
-        "y": 14
+        "y": 28
       },
       "id": 13,
       "interval": "1m",
       "options": {
+        "calculate": false,
         "calculation": {
           "xBuckets": {
             "mode": "size",
@@ -738,16 +1224,39 @@
         },
         "cellGap": 0,
         "color": {
+          "exponent": 0.5,
+          "fill": "dark-orange",
           "mode": "scheme",
+          "reverse": false,
+          "scale": "exponential",
           "scheme": "Spectral",
           "steps": 128
         },
+        "exemplars": {
+          "color": "rgba(255,0,255,0.7)"
+        },
+        "filterValues": {
+          "le": 1e-9
+        },
+        "legend": {
+          "show": true
+        },
+        "rowsFrame": {
+          "layout": "auto"
+        },
+        "tooltip": {
+          "mode": "single",
+          "showColorScale": false,
+          "yHistogram": false
+        },
         "yAxis": {
+          "axisPlacement": "left",
           "decimals": 0,
+          "reverse": false,
           "unit": "s"
         }
       },
-      "pluginVersion": "v11.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -756,7 +1265,8 @@
           },
           "expr": "sum(rate(pilot_xds_push_time_bucket{}[1m])) by (le)",
           "format": "heatmap",
-          "legendFormat": "{{le}}"
+          "legendFormat": "{{le}}",
+          "refId": "A"
         }
       ],
       "title": "Push Time",
@@ -768,15 +1278,31 @@
         "uid": "-- Mixed --"
       },
       "description": "Size of each xDS push.\n",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          }
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 10,
         "w": 8,
         "x": 16,
-        "y": 14
+        "y": 28
       },
       "id": 14,
       "interval": "1m",
       "options": {
+        "calculate": false,
         "calculation": {
           "xBuckets": {
             "mode": "size",
@@ -785,16 +1311,39 @@
         },
         "cellGap": 0,
         "color": {
+          "exponent": 0.5,
+          "fill": "dark-orange",
           "mode": "scheme",
+          "reverse": false,
+          "scale": "exponential",
           "scheme": "Spectral",
           "steps": 128
         },
+        "exemplars": {
+          "color": "rgba(255,0,255,0.7)"
+        },
+        "filterValues": {
+          "le": 1e-9
+        },
+        "legend": {
+          "show": true
+        },
+        "rowsFrame": {
+          "layout": "auto"
+        },
+        "tooltip": {
+          "mode": "single",
+          "showColorScale": false,
+          "yHistogram": false
+        },
         "yAxis": {
+          "axisPlacement": "left",
           "decimals": 0,
+          "reverse": false,
           "unit": "bytes"
         }
       },
-      "pluginVersion": "v11.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -803,7 +1352,8 @@
           },
           "expr": "sum(rate(pilot_xds_config_size_bytes_bucket{}[1m])) by (le)",
           "format": "heatmap",
-          "legendFormat": "{{le}}"
+          "legendFormat": "{{le}}",
+          "refId": "A"
         }
       ],
       "title": "Push Size",
@@ -815,7 +1365,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 100
+        "y": 38
       },
       "id": 15,
       "panels": [],
@@ -830,28 +1380,80 @@
       "description": "Rate of XDS push operations, by type. This is incremented on a per-proxy basis.\n",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "hue",
-            "showPoints": "never"
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
           }
-        }
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 101
+        "y": 39
       },
       "id": 16,
       "interval": "5s",
       "options": {
         "legend": {
           "calcs": [],
-          "displayMode": "list"
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
-      "pluginVersion": "v11.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -859,7 +1461,8 @@
             "uid": "$datasource"
           },
           "expr": "sum (rate(galley_validation_passed[$__rate_interval]))",
-          "legendFormat": "Success"
+          "legendFormat": "Success",
+          "refId": "A"
         },
         {
           "datasource": {
@@ -867,7 +1470,8 @@
             "uid": "$datasource"
           },
           "expr": "sum (rate(galley_validation_failed[$__rate_interval]))",
-          "legendFormat": "Failure"
+          "legendFormat": "Failure",
+          "refId": "B"
         }
       ],
       "title": "Validation",
@@ -881,28 +1485,80 @@
       "description": "Size of each xDS push.\n",
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "hue",
-            "showPoints": "never"
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
           }
-        }
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 101
+        "y": 39
       },
       "id": 17,
       "interval": "5s",
       "options": {
         "legend": {
           "calcs": [],
-          "displayMode": "list"
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
       },
-      "pluginVersion": "v11.0.0",
+      "pluginVersion": "11.6.1",
       "targets": [
         {
           "datasource": {
@@ -910,7 +1566,8 @@
             "uid": "$datasource"
           },
           "expr": "sum (rate(sidecar_injection_success_total[$__rate_interval]))",
-          "legendFormat": "Success"
+          "legendFormat": "Success",
+          "refId": "A"
         },
         {
           "datasource": {
@@ -918,20 +1575,24 @@
             "uid": "$datasource"
           },
           "expr": "sum (rate(sidecar_injection_failure_total[$__rate_interval]))",
-          "legendFormat": "Failure"
+          "legendFormat": "Failure",
+          "refId": "B"
         }
       ],
       "title": "Injection",
       "type": "timeseries"
     }
   ],
+  "preload": false,
   "refresh": "15s",
-  "schemaVersion": 39,
+  "schemaVersion": 41,
+  "tags": [],
   "templating": {
     "list": [
       {
         "name": "datasource",
         "query": "prometheus",
+        "refresh": 1,
         "type": "datasource"
       }
     ]
@@ -940,8 +1601,9 @@
     "from": "now-30m",
     "to": "now"
   },
+  "timepicker": {},
   "timezone": "utc",
   "title": "Istio Control Plane Dashboard",
   "uid": "1813f692a8e4ac77155348d4c7d2fba8",
-  "gnetId": 7645
+  "version": 1
 }

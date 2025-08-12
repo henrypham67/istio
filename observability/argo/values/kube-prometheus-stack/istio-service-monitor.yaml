@@ -6,9 +6,13 @@ metadata:
   labels:
     release: kube-prometheus-stack
 spec:
+  jobLabel: istio
+  targetLabels: [app]
   selector:
-    matchLabels:
-      app: istiod                 # adjust to your istiod Service labels
+    matchExpressions:
+    - key: istio
+      operator: In
+      values: [pilot]
   namespaceSelector:
     matchNames: ["istio-system"]
   endpoints:

@@ -245,7 +245,7 @@
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "sum by (pod) (go_memstats_stack_inuse_bytes{app=\"istiod\"})",
+          "expr": "sum by (pod) (go_memstats_stack_inuse_bytes{job=\"istiod\"})",
           "legendFormat": "Stack ({{pod}})",
           "refId": "B"
         },
@@ -254,7 +254,7 @@
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "sum by (pod) (go_memstats_heap_inuse_bytes{app=\"istiod\"})",
+          "expr": "sum by (pod) (go_memstats_heap_inuse_bytes{job=\"istiod\"})",
           "legendFormat": "Heap (In Use) ({{pod}})",
           "refId": "C"
         },
@@ -263,7 +263,7 @@
             "type": "prometheus",
             "uid": "$datasource"
           },
-          "expr": "sum by (pod) (go_memstats_heap_alloc_bytes{app=\"istiod\"})",
+          "expr": "sum by (pod) (go_memstats_heap_alloc_bytes{job=\"istiod\"})",
           "legendFormat": "Heap (Allocated) ({{pod}})",
           "refId": "D"
         }

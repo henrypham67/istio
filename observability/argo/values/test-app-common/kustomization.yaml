@@ -6,3 +6,4 @@ resources:
   - cronjob.yaml
   - ns.yaml
   - istio-pod-monitor.yaml
+  - false-vs.yaml

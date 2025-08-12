@@ -1,7 +1,6 @@
 configMapGenerator:
   - name: istio-services-grafana-dashboards
     files:
-      - dashboards/istio-extension-dashboard.json
       - dashboards/istio-mesh-dashboard.json
       - dashboards/istio-performance-dashboard.json
     options:
@@ -9,7 +8,6 @@ configMapGenerator:
         grafana_dashboard: "1"
   - name: istio-grafana-dashboards
     files:
-      - dashboards/istio_loki.json
       - dashboards/istio_control_plane.json
       - dashboards/opentelemetry-apm.json
     options:

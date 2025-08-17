@@ -1,0 +1,51 @@
+podAnnotations:
+  # -- Pod annotations for KEDA operator
+  keda:
+    traffic.sidecar.istio.io/excludeInboundPorts: "9666"
+    traffic.sidecar.istio.io/excludeOutboundPorts: "9443,6443"
+  # -- Pod annotations for KEDA Metrics Adapter
+  metricsAdapter:
+    traffic.sidecar.istio.io/excludeInboundPorts: "6443"
+    traffic.sidecar.istio.io/excludeOutboundPorts: "9666,9443"
+  # -- Pod annotations for KEDA Admission webhooks
+  webhooks:
+    traffic.sidecar.istio.io/excludeInboundPorts: "9443"
+    traffic.sidecar.istio.io/excludeOutboundPorts: "9666,6443"
+
+prometheus:
+  metricServer:
+    # -- Enable metric server Prometheus metrics expose
+    enabled: true
+    serviceMonitor:
+      # -- Enables ServiceMonitor creation for the Prometheus Operator
+      enabled: true
+      additionalLabels:
+        app.kubernetes.io/name: keda-operator-metrics-apiserver
+    podMonitor:
+      # -- Enables PodMonitor creation for the Prometheus Operator
+      enabled: true
+      additionalLabels:
+        app.kubernetes.io/name: keda-operator-metrics-apiserver
+      namespace: monitoring
+  operator:
+    # -- Enable metric server Prometheus metrics expose
+    enabled: true
+    serviceMonitor:
+      # -- Enables ServiceMonitor creation for the Prometheus Operator
+      enabled: true
+      additionalLabels:
+        app.kubernetes.io/name: keda-operator-metrics-apiserver
+    podMonitor:
+      # -- Enables PodMonitor creation for the Prometheus Operator
+      enabled: true
+      additionalLabels:
+        app.kubernetes.io/name: keda-operator-metrics-apiserver
+      namespace: monitoring
+  webhooks:
+    # -- Enable metric server Prometheus metrics expose
+    enabled: true
+    serviceMonitor:
+      # -- Enables ServiceMonitor creation for the Prometheus Operator
+      enabled: true
+      additionalLabels:
+        app.kubernetes.io/name: keda-operator-metrics-apiserver

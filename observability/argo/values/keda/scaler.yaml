@@ -1,0 +1,14 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: prometheus-scaledobject
+  namespace: test-app
+spec:
+  scaleTargetRef:
+    name: app-a
+  triggers:
+  - type: prometheus
+    metadata:
+      serverAddress: http://mimir-nginx.monitoring.svc.cluster.local/prometheus
+      threshold: '0.01'
+      query: sum(rate(istio_requests_total[2m]))

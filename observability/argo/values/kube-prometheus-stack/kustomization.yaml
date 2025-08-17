@@ -10,6 +10,7 @@ configMapGenerator:
     files:
       - dashboards/istio_control_plane.json
       - dashboards/opentelemetry-apm.json
+      - dashboards/keda.json
     options:
       labels:
         grafana_dashboard: "1"

@@ -95,6 +95,10 @@ spec:
     server: 'https://kubernetes.default.svc'
     namespace: test-app
   syncPolicy:
+    managedNamespaceMetadata:
+      labels:
+        kubernetes.io/metadata.name: test-app
+        istio-injection: enabled
     automated:
       prune: true
       selfHeal: true
@@ -102,3 +106,4 @@ spec:
       - ApplyOutOfSyncOnly=true
       - ServerSideApply=true
       - CreateNamespace=true
+      - RespectIgnoreDifferences=true

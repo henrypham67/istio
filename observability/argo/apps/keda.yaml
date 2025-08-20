@@ -20,6 +20,9 @@ spec:
     server: https://kubernetes.default.svc
     namespace: keda
   syncPolicy:
+    managedNamespaceMetadata:
+      labels:
+        monitoring: enabled
     automated:
       prune: true
       selfHeal: true

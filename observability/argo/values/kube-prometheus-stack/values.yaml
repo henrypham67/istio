@@ -81,6 +81,12 @@ grafana:
 
 prometheus:
   prometheusSpec:
+    ruleNamespaceSelector:
+      monitoring: enabled
+    serviceMonitorNamespaceSelector:
+      monitoring: enabled
+    podMonitorNamespaceSelector:
+      monitoring: enabled
     remoteWriteDashboards: true
     remoteWrite:
       - name: mimir

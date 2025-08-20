@@ -20,12 +20,12 @@ prometheus:
       # -- Enables ServiceMonitor creation for the Prometheus Operator
       enabled: true
       additionalLabels:
-        app.kubernetes.io/name: keda-operator-metrics-apiserver
+        release: kube-prometheus-stack
     podMonitor:
       # -- Enables PodMonitor creation for the Prometheus Operator
       enabled: true
       additionalLabels:
-        app.kubernetes.io/name: keda-operator-metrics-apiserver
+        release: kube-prometheus-stack
       namespace: monitoring
   operator:
     # -- Enable metric server Prometheus metrics expose
@@ -34,12 +34,12 @@ prometheus:
       # -- Enables ServiceMonitor creation for the Prometheus Operator
       enabled: true
       additionalLabels:
-        app.kubernetes.io/name: keda-operator-metrics-apiserver
+        release: kube-prometheus-stack
     podMonitor:
       # -- Enables PodMonitor creation for the Prometheus Operator
       enabled: true
       additionalLabels:
-        app.kubernetes.io/name: keda-operator-metrics-apiserver
+        release: kube-prometheus-stack
       namespace: monitoring
   webhooks:
     # -- Enable metric server Prometheus metrics expose
@@ -48,4 +48,4 @@ prometheus:
       # -- Enables ServiceMonitor creation for the Prometheus Operator
       enabled: true
       additionalLabels:
-        app.kubernetes.io/name: keda-operator-metrics-apiserver
+        release: kube-prometheus-stack

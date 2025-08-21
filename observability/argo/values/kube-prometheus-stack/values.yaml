@@ -81,15 +81,10 @@ grafana:
 
 prometheus:
   prometheusSpec:
-    ruleNamespaceSelector:
-      matchLabels:
-        monitoring: enabled
-    serviceMonitorNamespaceSelector:
-      matchLabels:
-        monitoring: enabled
-    podMonitorNamespaceSelector:
-      matchLabels:
-        monitoring: enabled
+    # these config make other targets disappear
+    ruleNamespaceSelector: {}
+    serviceMonitorNamespaceSelector: {}
+    podMonitorNamespaceSelector: {}
     remoteWriteDashboards: true
     remoteWrite:
       - name: mimir

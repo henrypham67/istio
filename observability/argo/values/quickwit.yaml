@@ -1,0 +1,12 @@
+environment:
+  QW_METASTORE_URI: s3://<my-bucket>/quickwit-indexes
+
+config:
+  default_index_root_uri: s3://<my-bucket>/quickwit-indexes
+  storage:
+    s3:
+      region: us-east-1
+
+serviceAccount:
+  create: true
+  name: "quickwit-sa"

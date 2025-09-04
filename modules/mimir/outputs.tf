@@ -10,7 +10,7 @@ output "iam_role_arn" {
 
 output "service_account_name" {
   description = "Name of the Kubernetes service account"
-  value       = kubernetes_service_account.mimir.metadata[0].name
+  value       = var.service_account_name
 }
 
 output "namespace" {

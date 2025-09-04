@@ -88,21 +88,10 @@ resource "kubernetes_namespace" "monitoring" {
   }
 }
 
-# Kubernetes Service Account
-resource "kubernetes_service_account" "mimir" {
-  metadata {
-    name      = var.service_account_name
-    namespace = kubernetes_namespace.monitoring.metadata[0].name
-    annotations = {
-      "eks.amazonaws.com/role-arn" = aws_iam_role.mimir_pod_identity.arn
-    }
-  }
-}
-
 # EKS Pod Identity Association
 resource "aws_eks_pod_identity_association" "mimir" {
   cluster_name    = var.cluster_name
   namespace       = kubernetes_namespace.monitoring.metadata[0].name
-  service_account = kubernetes_service_account.mimir.metadata[0].name
+  service_account = var.service_account_name
   role_arn        = aws_iam_role.mimir_pod_identity.arn
 }

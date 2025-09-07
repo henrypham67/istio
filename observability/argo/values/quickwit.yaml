@@ -1,8 +1,11 @@
+additionalLabels:
+   app: quickwit
+
 environment:
-  QW_METASTORE_URI: s3://<my-bucket>/quickwit-indexes
+  QW_METASTORE_URI: s3://my-quickwit-bucket-199907060500/indexes
 
 config:
-  default_index_root_uri: s3://<my-bucket>/quickwit-indexes
+  default_index_root_uri: s3://my-quickwit-bucket-199907060500/indexes
   storage:
     s3:
       region: us-east-1

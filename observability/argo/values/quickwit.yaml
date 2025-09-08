@@ -1,3 +1,7 @@
+image:
+  repository: hieupham0607/quickwit
+  tag: latest
+
 additionalLabels:
    app: quickwit
 

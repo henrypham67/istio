@@ -1,0 +1,109 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-a
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://github.com/henrypham67/istio
+      targetRevision: HEAD
+      path: observability/argo/values/test-app-common
+    - repoURL: https://github.com/henrypham67/istio
+      targetRevision: HEAD
+      path: observability/argo/values/test-app
+      kustomize:
+        patches:
+          # 1) Deployment
+          - target:
+              group: apps
+              version: v1
+              kind: Deployment
+              name: test-app
+            patch: |-
+              - op: replace
+                path: /metadata/name
+                value: app-a
+              - op: replace
+                path: /spec/selector/matchLabels/app
+                value: app-a
+              - op: replace
+                path: /spec/template/metadata/labels/app
+                value: app-a
+              - op: replace
+                path: /spec/template/spec/containers/0/env/0/value
+                value: app-a
+
+          # 2) Service
+          - target:
+              group: ""           # core API
+              version: v1
+              kind: Service
+              name: test-app
+            patch: |-
+              - op: replace
+                path: /metadata/name
+                value: app-a
+              - op: replace
+                path: /metadata/labels/app
+                value: app-a
+              - op: replace
+                path: /spec/selector/app
+                value: app-a
+              - op: replace
+                path: /spec/ports/0/name
+                value: tcp-800-app-a
+  
+
+          # 3) VirtualService (Istio)
+          - target:
+              group: networking.istio.io
+              version: v1
+              kind: VirtualService
+              name: test-app
+            patch: |-
+              - op: replace
+                path: /metadata/name
+                value: app-a
+              - op: replace
+                path: /spec/http/0/match/0/uri/prefix
+                value: /app-a/
+              - op: replace
+                path: /spec/http/0/match/1/uri/prefix
+                value: /app-a
+              - op: replace
+                path: /spec/http/0/route/0/destination/host
+                value: app-a.test-app.svc.cluster.local
+
+          # 4) ServiceMonitor (Prometheus)
+          - target:
+              group: monitoring.coreos.com
+              version: v1
+              kind: ServiceMonitor
+              name: test-app
+            patch: |-
+              - op: replace
+                path: /metadata/name
+                value: app-a-servicemonitor
+              - op: replace
+                path: /spec/selector/matchLabels/app
+                value: app-a
+              - op: replace
+                path: /spec/endpoints/0/port
+                value: tcp-800-app-a
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: test-app
+  syncPolicy:
+    managedNamespaceMetadata:
+      labels:
+        kubernetes.io/metadata.name: test-app
+        istio-injection: enabled
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+      - ServerSideApply=true
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true

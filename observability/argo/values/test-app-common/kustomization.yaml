@@ -4,5 +4,4 @@ kind: Kustomization
 # Reference the base directory
 resources:
   - cronjob.yaml
-  - istio-pod-monitor.yaml
   - false-vs.yaml

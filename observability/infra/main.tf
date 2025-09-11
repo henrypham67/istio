@@ -4,7 +4,7 @@ module "cluster" {
   name     = var.cluster_name
   vpc_cidr = "10.1.0.0/16"
 
-  desired_nodes = 5
+  desired_nodes = 7
   max_nodes     = 9
 }
 
@@ -29,7 +29,7 @@ resource "helm_release" "istiod" {
   create_namespace = true
 
   values = [templatefile("values/istio.yaml", {
-    CLUSTER_NAME = var.cluster_name
+    CLUSTER_NAME    = var.cluster_name
     ISTIO_NAMESPACE = var.istio_ns
   })]
 }

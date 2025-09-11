@@ -17,7 +17,7 @@ module "eks" {
   version = "~> 20.35"
 
   cluster_name                   = var.name
-  cluster_version                = "1.32"
+  cluster_version                = var.cluster_version
   cluster_endpoint_public_access = true
 
   enable_cluster_creator_admin_permissions = true
@@ -49,7 +49,7 @@ module "eks" {
 
   eks_managed_node_groups = {
     worker_nodes = { # node group name
-      ami_type      = "AL2_x86_64"
+      ami_type      = "AL2023_x86_64_STANDARD"
       instance_type = var.instance_type
 
       min_size     = var.min_nodes

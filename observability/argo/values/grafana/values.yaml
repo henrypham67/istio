@@ -47,5 +47,5 @@ datasources:
         url: http://quickwit-gateway.logging.svc.cluster.local
         editable: true
 
-env:
-  GF_INSTALL_PLUGINS: "quickwit-quickwit-datasource"
+plugins:
+  - quickwit-quickwit-datasource

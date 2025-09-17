@@ -7,7 +7,7 @@ sidecar:
     # Allow discovery in all namespaces for dashboards
     searchNamespace: ALL
 
-dataSources:
+datasources:
   datasources.yaml:
     apiVersion: 1
     datasources:

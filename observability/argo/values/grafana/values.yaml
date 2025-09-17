@@ -40,24 +40,12 @@ datasources:
                 value: compose_service
         readOnly: false
         editable: true
-      - uid: loki
+      - uid: quickwit
         orgId: 1
-        name: Loki
-        type: loki
-        typeName: Loki
-        access: proxy
-        url: http://loki-gateway.logging.svc.cluster.local
-        password: ''
-        user: ''
-        database: ''
-        basicAuth: false
-        isDefault: false
-        jsonData:
-          derivedFields:
-            - datasourceUid: tempo
-              matcherRegex: (?:trace_id)=(\w+)
-              matcherType: regex
-              name: TraceID
-              url: $${__value.raw}
-        readOnly: false
+        name: QuickWit
+        type: quickwit
+        url: http://quickwit-gateway.logging.svc.cluster.local
         editable: true
+
+env:
+  GF_INSTALL_PLUGINS: "quickwit-quickwit-datasource"

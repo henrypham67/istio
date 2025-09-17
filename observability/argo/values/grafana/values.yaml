@@ -44,7 +44,7 @@ datasources:
         orgId: 1
         name: QuickWit
         type: quickwit
-        url: http://quickwit-gateway.logging.svc.cluster.local
+        url: http://quickwit-searcher:7280
         editable: true
 
 plugins:

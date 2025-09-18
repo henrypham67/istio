@@ -32,6 +32,21 @@ spec:
                 - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
                   action: keep
                   regex: true
+            - job_name: test-app
+              scrape_interval: 30s
+              metrics_path: /metrics
+              kubernetes_sd_configs:
+                - role: endpoints
+                  namespaces:
+                    names:
+                      - test-app
+              relabel_configs:
+                - source_labels: [__meta_kubernetes_service_label_purpose]
+                  regex: testing
+                  action: keep
+                - source_labels: [__meta_kubernetes_endpoint_port_name]
+                  regex: http-monitoring
+                  action: keep
       otlp:
         protocols:
           grpc:

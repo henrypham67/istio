@@ -92,7 +92,7 @@ spec:
           processors: [batch, memory_limiter, attributes]
           exporters: [otlphttp/tempo, debug, spanmetrics]
         metrics:
-          receivers: [spanmetrics, otlp]
+          receivers: [spanmetrics, otlp, prometheus]
           processors: [batch]
           exporters: [debug, otlphttp/metrics]
         logs:

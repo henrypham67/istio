@@ -8,24 +8,9 @@ rules:
   verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: ClusterRoleBinding
 metadata:
-  name: otel-collector-services-binding
-  namespace: test-app
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: otel-collector-cluster-access
-subjects:
-- kind: ServiceAccount
-  name: opentelemetry-collector
-  namespace: opentelemetry-operator-system
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: otel-collector-pods-binding  # Optional: Bind if adding pods Role
-  namespace: test-app
+  name: otel-collector-cluster-binding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

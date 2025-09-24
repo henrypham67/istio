@@ -1,0 +1,16 @@
+configMapGenerator:
+  - name: istio-services-grafana-dashboards
+    files:
+      - dashboards/istio-mesh-dashboard.json
+      - dashboards/istio-performance-dashboard.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+  - name: istio-grafana-dashboards
+    files:
+      - dashboards/istio_control_plane.json
+      - dashboards/opentelemetry-apm.json
+      - dashboards/keda.json
+    options:
+      labels:
+        grafana_dashboard: "1"

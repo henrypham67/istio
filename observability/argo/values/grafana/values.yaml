@@ -40,12 +40,19 @@ datasources:
                 value: compose_service
         readOnly: false
         editable: true
-      - uid: quickwit
-        orgId: 1
-        name: QuickWit
-        type: quickwit
-        url: http://quickwit-searcher:7280
-        editable: true
+      - name: QuickWit
+        type: quickwit-quickwit-datasource
+        access: proxy
+        url: http://quickwit-searcher.monitoring.svc.cluster.local:7280/api/v1
+        user: ""
+        database: ""
+        basicAuth: false
+        isDefault: false
+        jsonData:
+          index: otel-traces-v0_9
+          logLevelField: ""
+          logMessageField: ""
+          pdcInjected: false
 
 plugins:
   - quickwit-quickwit-datasource

@@ -1,0 +1,135 @@
+# This file is no longer needed!
+# 
+# The s3-pod-identity module now creates IAM roles and policies internally,
+# providing maximum security isolation with individual roles per application.
+#
+# Simply use the module directly:
+
+# Example 1: Mimir with individual IAM role
+module "mimir_storage" {
+  source = "./modules/s3-pod-identity"
+  
+  cluster_name         = "my-cluster"
+  application_name     = "mimir"
+  bucket_name          = "my-cluster-mimir-bucket"
+  namespace            = "monitoring"
+  service_account_name = "mimir-sa"
+  
+  # Mimir-specific permissions
+  s3_permissions = [
+    "s3:ListBucket",
+    "s3:GetObject",
+    "s3:PutObject",
+    "s3:DeleteObject",
+    "s3:GetObjectAttributes"  # Required by Mimir
+  ]
+  
+  create_namespace = true
+  
+  tags = {
+    Application = "mimir"
+    Environment = "production"
+  }
+}
+
+# Example 2: Loki with individual IAM role
+module "loki_storage" {
+  source = "./modules/s3-pod-identity"
+  
+  cluster_name         = "my-cluster"
+  application_name     = "loki"
+  bucket_name          = "my-cluster-loki-chunks-bucket"
+  namespace            = "logging"
+  service_account_name = "loki-sa"
+  
+  # Loki-specific permissions (no GetObjectAttributes needed)
+  s3_permissions = [
+    "s3:ListBucket",
+    "s3:GetObject",
+    "s3:PutObject",
+    "s3:DeleteObject"
+  ]
+  
+  # Access to additional ruler bucket
+  additional_policy_statements = [
+    {
+      Effect = "Allow"
+      Action = [
+        "s3:ListBucket",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ]
+      Resource = [
+        "arn:aws:s3:::my-cluster-loki-ruler-bucket",
+        "arn:aws:s3:::my-cluster-loki-ruler-bucket/*"
+      ]
+    }
+  ]
+  
+  create_namespace = true
+  enable_versioning = false  # Cost optimization for log chunks
+  
+  tags = {
+    Application = "loki"
+    Environment = "production"
+  }
+}
+
+# Example 3: Tempo with individual IAM role
+module "tempo_storage" {
+  source = "./modules/s3-pod-identity"
+  
+  cluster_name         = "my-cluster"
+  application_name     = "tempo"
+  bucket_name          = "my-cluster-tempo-bucket"
+  namespace            = "tracing"
+  service_account_name = "tempo-sa"
+  
+  # Tempo-specific permissions (includes tagging)
+  s3_permissions = [
+    "s3:ListBucket",
+    "s3:GetObject",
+    "s3:PutObject",
+    "s3:DeleteObject",
+    "s3:GetObjectTagging",   # Required by Tempo
+    "s3:PutObjectTagging"    # Required by Tempo
+  ]
+  
+  create_namespace = true
+  
+  # Enhanced security for sensitive trace data
+  sse_algorithm = "aws:kms"
+  
+  tags = {
+    Application = "tempo"
+    Environment = "production"
+  }
+}
+
+# Benefits of the Individual Role Approach:
+#
+# ✅ Maximum Security Isolation
+#    - Each application has its own IAM role and policy
+#    - Principle of least privilege automatically enforced
+#    - Minimal blast radius if one role is compromised
+#
+# ✅ Application-Specific Permissions
+#    - Mimir gets GetObjectAttributes for metadata operations
+#    - Tempo gets object tagging permissions for its workflow
+#    - Loki can access multiple buckets via additional statements
+#
+# ✅ Operational Simplicity
+#    - No external IAM resource management required
+#    - Automatic role and policy naming with consistent patterns
+#    - Ready-to-use Helm chart values in module outputs
+#
+# ✅ Production Ready
+#    - Comprehensive validation and error handling
+#    - Security best practices enabled by default
+#    - Full Terraform lifecycle management
+#
+# ✅ Flexibility
+#    - Custom IAM role and policy names when needed
+#    - Additional managed policies can be attached
+#    - Extensive configuration options for different use cases

@@ -12,6 +12,7 @@ datasources:
     apiVersion: 1
     datasources:
       - name: Mimir
+        uid: mimir
         type: prometheus
         url: http://mimir-nginx.monitoring.svc.cluster.local/prometheus
         isDefault: true
@@ -40,7 +41,8 @@ datasources:
                 value: compose_service
         readOnly: false
         editable: true
-      - name: QuickWit
+      - uid: quickwit
+        name: QuickWit
         type: quickwit-quickwit-datasource
         access: proxy
         url: http://quickwit-searcher.monitoring.svc.cluster.local:7280/api/v1

@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: app-b-keda-http-addon-vs
+spec:
+  gateways:
+  - istio-system/shared-gateway
+  hosts:
+  - '*'
+  http:
+  - match:
+    - port: 8080
+      uri:
+        prefix: /app-b-keda/
+    - port: 8080
+      uri:
+        prefix: /app-b-keda
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: keda-add-ons-http-interceptor-proxy.keda.svc.cluster.local
+        port:
+          number: 8080

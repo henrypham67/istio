@@ -1,0 +1,21 @@
+kind: HTTPScaledObject
+apiVersion: http.keda.sh/v1alpha1
+metadata:
+  name: app-b-httpscaledobject
+spec:
+  hosts:
+  - "*"
+  pathPrefixes:
+  - "/"
+  scaleTargetRef:
+    deployment: app-b
+    service: app-b
+    port: 8000
+  replicas:
+    min: 1
+    max: 10
+  scalingMetric:
+    requestRate:
+      granularity: 1s
+      targetValue: 5
+      window: 1m

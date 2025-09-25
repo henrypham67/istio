@@ -80,6 +80,12 @@ grafana:
       editable: true
 
 prometheus:
+  ## Toggle prometheus into agent mode
+  ## Note many of features described below (e.g. rules, query, alerting, remote read, thanos) will not work in agent mode.
+  ## ref: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/platform/prometheus-agent.md
+  ## Alert rules evaluation -> Mimir
+  ## 
+  agentMode: true
   prometheusSpec:
     # these config make other targets disappear
     ruleNamespaceSelector: {}

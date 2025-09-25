@@ -8,7 +8,9 @@ spec:
   pathPrefixes:
   - "/"
   scaleTargetRef:
-    deployment: app-b
+    name: app-b
+    kind: Deployment
+    apiVersion: apps/v1
     service: app-b
     port: 8000
   replicas:

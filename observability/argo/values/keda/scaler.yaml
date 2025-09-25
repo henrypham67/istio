@@ -12,3 +12,4 @@ spec:
       serverAddress: http://mimir-nginx.monitoring.svc.cluster.local/prometheus
       threshold: '0.01'
       query: sum(rate(istio_requests_total[2m]))
+  maxReplicaCount: 5

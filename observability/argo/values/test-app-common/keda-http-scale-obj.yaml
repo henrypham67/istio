@@ -3,8 +3,6 @@ apiVersion: http.keda.sh/v1alpha1
 metadata:
   name: app-b-httpscaledobject
 spec:
-  hosts:
-  - "*"
   pathPrefixes:
   - "/"
   scaleTargetRef:
@@ -14,10 +12,10 @@ spec:
     service: app-b
     port: 8000
   replicas:
-    min: 0  # Set to 0 for scale-to-zero testing; use 1 if your app doesn't support zero replicas
+    min: 1
     max: 10
   scalingMetric:
     requestRate:
       granularity: 1s
       targetValue: 1  # Low value for easy triggering during tests (e.g., ~60 requests over 1 minute to hit 1 RPS average)
-      window: 1m
+      window: 5s

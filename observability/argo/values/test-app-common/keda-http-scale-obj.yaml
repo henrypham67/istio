@@ -6,7 +6,7 @@ spec:
   hosts:
   - "*"
   pathPrefixes:
-  - "/"
+  - "/app-keda"
   scaleTargetRef:
     name: app-b
     kind: Deployment

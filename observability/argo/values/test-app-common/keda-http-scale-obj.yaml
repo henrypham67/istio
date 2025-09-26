@@ -4,9 +4,9 @@ metadata:
   name: app-b-httpscaledobject
 spec:
   hosts:
-  - istio-gateway-lb-2ebe748584082eb6.elb.us-east-1.amazonaws.com:8080
-  # pathPrefixes:
-  # - "/"
+  - "*"
+  pathPrefixes:
+  - "/app-keda"
   scaleTargetRef:
     name: app-b
     kind: Deployment

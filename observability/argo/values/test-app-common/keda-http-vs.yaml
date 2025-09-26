@@ -11,14 +11,14 @@ spec:
   - match:
     - port: 8080
       uri:
-        prefix: /app-b-keda/
+        prefix: /app-keda/
     - port: 8080
       uri:
-        prefix: /app-b-keda
+        prefix: /app-keda
     rewrite:
       uri: /
     route:
     - destination:
-        host: app-a.test-app.svc.cluster.local
+        host: keda-add-ons-http-interceptor-proxy.keda.svc.cluster.local
         port:
           number: 8000

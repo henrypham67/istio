@@ -3,10 +3,10 @@ kind: VirtualService
 metadata:
   name: app-b-keda-http-addon-vs
 spec:
-  gateways:
-  - istio-system/shared-gateway
   hosts:
-  - '*'
+    - "*"
+  gateways:
+    - istio-system/shared-gateway
   http:
   - match:
     - port: 8080
@@ -21,4 +21,4 @@ spec:
     - destination:
         host: app-b.test-app.svc.cluster.local
         port:
-          number: 8080
+          number: 8000

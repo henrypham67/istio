@@ -4,7 +4,7 @@ metadata:
   name: app-b-httpscaledobject
 spec:
   hosts:
-  - "*"
+  - "istio-gateway-lb-2ebe748584082eb6.elb.us-east-1.amazonaws.com"
   pathPrefixes:
   - "/"
   scaleTargetRef:

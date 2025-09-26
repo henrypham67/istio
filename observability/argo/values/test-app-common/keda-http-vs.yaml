@@ -19,6 +19,6 @@ spec:
       uri: /
     route:
     - destination:
-        host: app-b.test-app.svc.cluster.local
+        host: app-a.test-app.svc.cluster.local
         port:
           number: 8000

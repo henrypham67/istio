@@ -19,6 +19,6 @@ spec:
       uri: /
     route:
     - destination:
-        host: keda-add-ons-http-interceptor-proxy.keda.svc.cluster.local
+        host: app-b.test-app.svc.cluster.local
         port:
           number: 8080

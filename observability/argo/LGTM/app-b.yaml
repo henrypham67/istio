@@ -98,3 +98,9 @@ spec:
       - ApplyOutOfSyncOnly=true
       - ServerSideApply=true
       - CreateNamespace=true
+      - RespectIgnoreDifferences=true
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas

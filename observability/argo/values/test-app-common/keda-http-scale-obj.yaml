@@ -3,6 +3,8 @@ apiVersion: http.keda.sh/v1alpha1
 metadata:
   name: app-b-httpscaledobject
 spec:
+  hosts:
+  - "istio-gateway-lb-fc39df2a05fb0745.elb.us-east-1.amazonaws.com"
   pathPrefixes:
   - "/"
   scaleTargetRef:

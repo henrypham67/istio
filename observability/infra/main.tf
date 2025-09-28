@@ -96,11 +96,62 @@ resource "helm_release" "istio_gateway" {
   ]
 }
 
-module "mimir" {
-  source = "../../modules/mimir"
+locals {
+  apps_need_storage = {
+    "mimir" : [
+      "s3:ListBucket",
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+      "s3:GetObjectAttributes",
+      "s3:ListMultipartUploadParts",
+      "s3:AbortMultipartUpload"
+    ],
+    "quickwit" : [
+      "s3:ListBucket",
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+      "s3:ListMultipartUploadParts",
+      "s3:AbortMultipartUpload"
+    ]
 
-  cluster_name      = var.cluster_name
-  mimir_bucket_name = var.mimir_bucket_name
+  }
+}
+
+
+module "storages" {
+  for_each = local.apps_need_storage
+  source   = "../../modules/s3-pod-identity"
+
+  # Core configuration
+  cluster_name         = module.cluster.cluster_name
+  application_name     = each.key
+  bucket_name          = "my-${each.key}-bucket-199907060500"
+  namespace            = "monitoring"
+  service_account_name = "${each.key}-sa"
+
+  # S3 configuration
+  enable_versioning = true
+  sse_algorithm     = "AES256"
+
+  s3_permissions = each.value
+
+  # Lifecycle management for cost optimization
+  lifecycle_rules = [
+    {
+      id                                     = "delete-old-versions"
+      enabled                                = true
+      noncurrent_version_expiration_days     = 90
+      abort_incomplete_multipart_upload_days = 7
+    }
+  ]
+
+  tags = {
+    Application = each.key
+    Environment = "production"
+    DataType    = "metrics"
+  }
 }
 
 module "argocd" {

@@ -4,9 +4,10 @@ metadata:
   name: app-b-httpscaledobject
 spec:
   hosts:
+  - "*.amazonaws.com"
   - "istio-gateway-lb-fc39df2a05fb0745.elb.us-east-1.amazonaws.com"
   pathPrefixes:
-  - "/"
+  - "/" # default but also this is what has been rewritten by the VS
   scaleTargetRef:
     name: app-b
     kind: Deployment
@@ -14,10 +15,12 @@ spec:
     service: app-b
     port: 8000
   replicas:
-    min: 1
+    min: 0 # For testing, until an incoming request a pod will be created
     max: 10
   scalingMetric:
     requestRate:
       granularity: 1s
       targetValue: 1  # Low value for easy triggering during tests (e.g., ~60 requests over 1 minute to hit 1 RPS average)
       window: 5s
+
+# for i in {1..100}; do curl http://istio-gatewat:8080/app-keda/ ; sleep 0.5; done

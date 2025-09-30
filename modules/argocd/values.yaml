@@ -1,0 +1,405 @@
+applicationsets:
+  root-app:
+    namespace: argocd
+    goTemplate: true
+    generators:
+    - list:
+        elements:
+        - name: app-a
+          namespace: test-app
+          specYaml: |
+            spec:
+              sources:
+                - repoURL: https://github.com/henrypham67/istio
+                  targetRevision: HEAD
+                  path: observability/argo/test-app-common
+                - repoURL: https://github.com/henrypham67/istio
+                  targetRevision: HEAD
+                  path: observability/argo/test-app
+                  kustomize:
+                    patches:
+                      # 1) Deployment
+                      - target:
+                          group: apps
+                          version: v1
+                          kind: Deployment
+                          name: test-app
+                        patch: |-
+                          - op: replace
+                            path: /metadata/name
+                            value: app-a
+                          - op: replace
+                            path: /spec/selector/matchLabels/app
+                            value: app-a
+                          - op: replace
+                            path: /spec/template/metadata/labels/app
+                            value: app-a
+                          - op: replace
+                            path: /spec/template/spec/containers/0/env/0/value
+                            value: app-a
+
+                      # 2) Service
+                      - target:
+                          group: ""           # core API
+                          version: v1
+                          kind: Service
+                          name: test-app
+                        patch: |-
+                          - op: replace
+                            path: /metadata/name
+                            value: app-a
+                          - op: replace
+                            path: /metadata/labels/app
+                            value: app-a
+                          - op: replace
+                            path: /spec/selector/app
+                            value: app-a
+                          - op: replace
+                            path: /spec/ports/0/name
+                            value: tcp-800-app-a
+              
+
+                      # 3) VirtualService (Istio)
+                      - target:
+                          group: networking.istio.io
+                          version: v1
+                          kind: VirtualService
+                          name: test-app
+                        patch: |-
+                          - op: replace
+                            path: /metadata/name
+                            value: app-a
+                          - op: replace
+                            path: /spec/http/0/match/0/uri/prefix
+                            value: /app-a/
+                          - op: replace
+                            path: /spec/http/0/match/1/uri/prefix
+                            value: /app-a
+                          - op: replace
+                            path: /spec/http/0/route/0/destination/host
+                            value: app-a.test-app.svc.cluster.local
+
+                      # 4) ServiceMonitor (Prometheus)
+                      - target:
+                          group: monitoring.coreos.com
+                          version: v1
+                          kind: ServiceMonitor
+                          name: test-app
+                        patch: |-
+                          - op: replace
+                            path: /metadata/name
+                            value: app-a-servicemonitor
+                          - op: replace
+                            path: /spec/selector/matchLabels/app
+                            value: app-a
+                          - op: replace
+                            path: /spec/endpoints/0/port
+                            value: tcp-800-app-a
+              syncPolicy:
+                managedNamespaceMetadata:
+                  labels:
+                    kubernetes.io/metadata.name: test-app
+                    istio-injection: enabled
+                automated:
+                  prune: true
+                  selfHeal: true
+                syncOptions:
+                  - ApplyOutOfSyncOnly=true
+                  - ServerSideApply=true
+                  - CreateNamespace=true
+                  - RespectIgnoreDifferences=true
+
+        - name: app-b
+          namespace: test-app
+          specYaml: |
+            spec:
+              source:
+                repoURL: https://github.com/henrypham67/istio
+                targetRevision: HEAD
+                path: observability/argo/test-app
+                kustomize:
+                  patches:
+                    # 1) Deployment
+                    - target:
+                        group: apps
+                        version: v1
+                        kind: Deployment
+                        name: test-app
+                      patch: |-
+                        - op: replace
+                          path: /metadata/name
+                          value: app-b
+                        - op: replace
+                          path: /spec/selector/matchLabels/app
+                          value: app-b
+                        - op: replace
+                          path: /spec/template/metadata/labels/app
+                          value: app-b
+                        - op: replace
+                          path: /spec/template/spec/containers/0/env/0/value
+                          value: app-b
+
+                    # 2) Service
+                    - target:
+                        group: ""           # core API
+                        version: v1
+                        kind: Service
+                        name: test-app
+                      patch: |-
+                        - op: replace
+                          path: /metadata/name
+                          value: app-b
+                        - op: replace
+                          path: /metadata/labels/app
+                          value: app-b
+                        - op: replace
+                          path: /spec/selector/app
+                          value: app-b
+                        - op: replace
+                          path: /spec/ports/0/name
+                          value: tcp-800-app-b
+
+                    # 3) VirtualService (Istio)
+                    - target:
+                        group: networking.istio.io
+                        version: v1
+                        kind: VirtualService
+                        name: test-app
+                      patch: |-
+                        - op: replace
+                          path: /metadata/name
+                          value: app-b
+                        - op: replace
+                          path: /spec/http/0/match/0/uri/prefix
+                          value: /app-b/
+                        - op: replace
+                          path: /spec/http/0/match/1/uri/prefix
+                          value: /app-b
+                        - op: replace
+                          path: /spec/http/0/route/0/destination/host
+                          value: app-b.test-app.svc.cluster.local
+
+                    # 4) ServiceMonitor (Prometheus)
+                    - target:
+                        group: monitoring.coreos.com
+                        version: v1
+                        kind: ServiceMonitor
+                        name: test-app
+                      patch: |-
+                        - op: replace
+                          path: /metadata/name
+                          value: app-b-servicemonitor
+                        - op: replace
+                          path: /spec/selector/matchLabels/app
+                          value: app-b
+                        - op: replace
+                          path: /spec/endpoints/0/port
+                          value: tcp-800-app-b
+              syncPolicy:
+                automated:
+                  prune: true
+                  selfHeal: true
+                syncOptions:
+                  - ApplyOutOfSyncOnly=true
+                  - ServerSideApply=true
+                  - CreateNamespace=true
+                  - RespectIgnoreDifferences=true  # Unique to app-a/b/c
+                ignoreDifferences:
+                  - group: apps
+                    kind: Deployment
+                    jsonPointers:
+                      - /spec/replicas
+
+        - name: app-c
+          namespace: test-app
+          specYaml: |
+            spec:
+              source:
+                repoURL: https://github.com/henrypham67/istio
+                targetRevision: HEAD
+                path: observability/argo/test-app
+                kustomize:
+                  patches:
+                    # 1) Deployment
+                    - target:
+                        group: apps
+                        version: v1
+                        kind: Deployment
+                        name: test-app
+                      patch: |-
+                        - op: replace
+                          path: /metadata/name
+                          value: app-c
+                        - op: replace
+                          path: /spec/selector/matchLabels/app
+                          value: app-c
+                        - op: replace
+                          path: /spec/template/metadata/labels/app
+                          value: app-c
+                        - op: replace
+                          path: /spec/template/spec/containers/0/env/0/value
+                          value: app-c
+                    # 2) Service
+                    - target:
+                        group: ""           # core API
+                        version: v1
+                        kind: Service
+                        name: test-app
+                      patch: |-
+                        - op: replace
+                          path: /metadata/name
+                          value: app-c
+                        - op: replace
+                          path: /metadata/labels/app
+                          value: app-c
+                        - op: replace
+                          path: /spec/selector/app
+                          value: app-c
+                        - op: replace
+                          path: /spec/ports/0/name
+                          value: tcp-800-app-c
+                    # 3) VirtualService (Istio)
+                    - target:
+                        group: networking.istio.io
+                        version: v1
+                        kind: VirtualService
+                        name: test-app
+                      patch: |-
+                        - op: replace
+                          path: /metadata/name
+                          value: app-c
+                        - op: replace
+                          path: /spec/http/0/match/0/uri/prefix
+                          value: /app-c/
+                        - op: replace
+                          path: /spec/http/0/match/1/uri/prefix
+                          value: /app-c
+                        - op: replace
+                          path: /spec/http/0/route/0/destination/host
+                          value: app-c.test-app.svc.cluster.local
+                    # 4) ServiceMonitor (Prometheus)
+                    - target:
+                        group: monitoring.coreos.com
+                        version: v1
+                        kind: ServiceMonitor
+                        name: test-app
+                      patch: |-
+                        - op: replace
+                          path: /metadata/name
+                          value: app-c-servicemonitor
+                        - op: replace
+                          path: /spec/selector/matchLabels/app
+                          value: app-c
+                        - op: replace
+                          path: /spec/endpoints/0/port
+                          value: tcp-800-app-c
+              ignoreDifferences:
+                - group: apps
+                  kind: Deployment
+                  jsonPointers:
+                    - /spec/replicas
+        - name: grafana
+          namespace: monitoring
+          specYaml: |
+            spec:
+                sources:
+                  - repoURL: https://github.com/henrypham67/istio
+                    targetRevision: HEAD
+                    path: observability/argo/grafana
+                    ref: custom
+                  - repoURL: https://grafana.github.io/helm-charts
+                    chart: grafana
+                    targetRevision: 9.4.4
+                    helm:
+                      valueFiles:
+                        - $custom/observability/argo/grafana/values.yaml
+                syncPolicy:
+                  automated:
+                    prune: true
+                    selfHeal: true
+                  syncOptions:
+                    - ApplyOutOfSyncOnly=true
+                    - ServerSideApply=true
+                    - CreateNamespace=true
+
+        - name: mimir
+          namespace: monitoring
+          specYaml: |
+            spec:
+              sources:
+                - repoURL: https://grafana.github.io/helm-charts
+                  chart: mimir-distributed
+                  targetRevision: 5.7.0
+                  helm:
+                    valueFiles:
+                      - $custom/observability/argo/mimir.yaml
+                - repoURL: https://github.com/henrypham67/istio
+                  targetRevision: HEAD
+                  ref: custom
+
+        - name: open-telemetry
+          namespace: opentelemetry-operator-system
+          specYaml: |
+            spec:
+              sources:
+                - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
+                  chart: opentelemetry-operator
+                  targetRevision: 0.90.4
+                  helm:
+                    valueFiles:
+                      - $custom/observability/argo/open-telemetry/values.yaml
+                - repoURL: https://github.com/henrypham67/istio
+                  targetRevision: HEAD
+                  path: observability/argo/open-telemetry
+                  ref: custom
+                  directory:
+                    exclude: '{collector.yaml,values.yaml}'
+              syncPolicy:
+                automated:
+                  prune: true
+                  selfHeal: true
+                syncOptions:
+                  - ApplyOutOfSyncOnly=true
+                  - ServerSideApply=true
+                  - CreateNamespace=true
+        - name: quickwit
+          namespace: monitoring
+          specYaml: |
+            spec:
+              sources:
+                - repoURL: https://github.com/henrypham67/istio
+                  targetRevision: HEAD
+                  ref: custom
+                - repoURL: https://helm.quickwit.io
+                  chart: quickwit
+                  targetRevision: 0.7.18
+                  helm:
+                    valueFiles:
+                      - $custom/observability/argo/quickwit.yaml
+              destination:
+                server: https://kubernetes.default.svc
+                namespace: monitoring
+              syncPolicy:
+                automated:
+                  prune: true
+                  selfHeal: true
+                syncOptions:
+                  - ApplyOutOfSyncOnly=true
+                  - ServerSideApply=true
+                  - CreateNamespace=true
+    template:
+      metadata:
+        name: '{{.name}}'
+      spec:
+        project: default
+        destination:
+          server: https://kubernetes.default.svc
+          namespace: '{{.namespace}}'
+        syncPolicy:
+          automated:
+            prune: true
+            selfHeal: true
+    templatePatch: |
+      {{.specYaml}}
+    syncPolicy:
+      preserveResourcesOnDeletion: true

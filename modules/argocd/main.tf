@@ -15,37 +15,6 @@ resource "helm_release" "argocd" {
   values = var.argocd_helm_values
 }
 
-resource "argocd_application" "app_of_apps" {
-  depends_on = [helm_release.argocd]
-
-  metadata {
-    name      = var.app_of_apps_name
-    namespace = var.argocd_namespace
-  }
-
-  spec {
-    project = "default"
-
-    source {
-      repo_url        = var.git_repo_url
-      path            = var.app_of_apps_path
-      target_revision = "HEAD"
-    }
-
-    destination {
-      server    = "https://kubernetes.default.svc"
-      namespace = var.app_of_apps_namespace
-    }
-
-    sync_policy {
-      automated {
-        prune     = true
-        self_heal = true
-      }
-    }
-  }
-}
-
 resource "kubectl_manifest" "gateway" {
   depends_on = [var.istio_gateway, helm_release.argocd]
 
@@ -103,4 +72,14 @@ spec:
             port:
               number: 80
 YAML
+}
+
+resource "helm_release" "appset" {
+  chart            = "argocd-apps"
+  name             = "appset"
+  repository       = "https://argoproj.github.io/argo-helm"
+  namespace        = var.argocd_namespace
+  create_namespace = true
+
+  values = [file("${path.module}/values.yaml")]
 }

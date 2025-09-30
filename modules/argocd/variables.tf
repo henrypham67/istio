@@ -22,18 +22,6 @@ variable "app_of_apps_name" {
   default     = "observability"
 }
 
-variable "app_of_apps_path" {
-  description = "Path in the Git repo for the App of Apps"
-  type        = string
-  default     = "observability/argo/apps"
-}
-
-variable "app_of_apps_namespace" {
-  description = "Destination namespace for the App of Apps"
-  type        = string
-  default     = "observability"
-}
-
 variable "istio_gateway" {
   description = "Istio gateway Helm release resource for dependency"
   type        = any

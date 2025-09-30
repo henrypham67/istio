@@ -1,0 +1,103 @@
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: opentelemetry
+spec:
+  config:
+    receivers:
+      prometheus:
+        config:
+          scrape_configs:
+            - job_name: 'kubernetes-pods'  # Replaces PodMonitor
+              kubernetes_sd_configs:
+                - role: pod
+              relabel_configs:
+                - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+                  action: keep
+                  regex: true
+                - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+                  action: replace
+                  target_label: __metrics_path__
+                  regex: (.+)
+                - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+                  action: replace
+                  regex: ([^:]+)(?::\d+)?;(\d+)
+                  replacement: $1:$2
+                  target_label: __address__
+              # Add similar for services (replaces ServiceMonitor)
+            - job_name: 'kubernetes-services'
+              kubernetes_sd_configs:
+                - role: service
+              relabel_configs:
+                - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+                  action: keep
+                  regex: true
+            - job_name: test-app
+              scrape_interval: 30s
+              metrics_path: /metrics
+              kubernetes_sd_configs:
+                - role: endpoints
+                  namespaces:
+                    names:
+                      - test-app
+              relabel_configs:
+                - source_labels: [__meta_kubernetes_service_label_purpose]
+                  regex: testing
+                  action: keep
+                - source_labels: [__meta_kubernetes_endpoint_port_name]
+                  regex: http-monitoring
+                  action: keep
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+    processors:
+      memory_limiter:
+        check_interval: 1s
+        limit_percentage: 75
+        spike_limit_percentage: 15
+      batch:
+        send_batch_size: 10000
+        timeout: 10s
+      attributes:
+        actions:
+          - key: "environment"
+            value: "development"
+            action: insert
+          - key: "from"
+            value: "open-telemetry"
+            action: insert
+    exporters:
+      otlphttp/metrics:
+        endpoint: http://mimir-distributor.monitoring.svc.cluster.local:8080/otlp
+      otlp/quickwit:
+        endpoint: http://quickwit-indexer.monitoring.svc.cluster.local:7281
+        tls:
+          insecure: true
+      debug:
+        verbosity: normal
+
+    connectors:
+      spanmetrics:
+        dimensions:
+          - name: http.method
+          - name: http.status_code
+          - name: http.route
+
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch, memory_limiter, attributes]
+          exporters: [otlp/quickwit, debug, spanmetrics]
+        metrics:
+          receivers: [spanmetrics, otlp, prometheus]
+          processors: [batch]
+          exporters: [debug, otlphttp/metrics]
+        logs:
+          receivers: [otlp]
+          processors: [batch, attributes]
+          exporters: [otlp/quickwit, debug]
+# TODO create more instrumentation

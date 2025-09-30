@@ -2,6 +2,7 @@ kind: HTTPScaledObject
 apiVersion: http.keda.sh/v1alpha1
 metadata:
   name: app-b-httpscaledobject
+  namespace: test-app
 spec:
   hosts:
   - "*.amazonaws.com"

@@ -18,7 +18,7 @@ spec:
           - $custom/observability/argo/values/keda/values.yaml
     - repoURL: https://kedacore.github.io/charts
       chart: keda-add-ons-http
-      targetRevision: 0.9.0
+      targetRevision: 0.10.0
   destination:
     server: https://kubernetes.default.svc
     namespace: keda

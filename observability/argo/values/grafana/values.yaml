@@ -16,45 +16,22 @@ datasources:
         type: prometheus
         url: http://mimir-nginx.monitoring.svc.cluster.local/prometheus
         isDefault: true
-      - uid: tempo
-        orgId: 1
-        name: Tempo
-        type: tempo
-        typeName: Tempo
-        access: proxy
-        url: http://tempo.monitoring.svc.cluster.local:3100
-        password: ''
-        user: ''
-        database: ''
-        basicAuth: false
-        isDefault: false
-        jsonData:
-          nodeGraph:
-            enabled: true
-          tracesToLogsV2:
-            customQuery: false
-            datasourceUid: loki
-            filterBySpanID: false
-            filterByTraceID: true
-            tags:
-              - key: service.name
-                value: compose_service
         readOnly: false
         editable: true
-      - uid: quickwit
-        name: QuickWit
+      - uid: quickwit-trace
+        name: QuickWit Trace
         type: quickwit-quickwit-datasource
         access: proxy
         url: http://quickwit-searcher.monitoring.svc.cluster.local:7280/api/v1
-        user: ""
-        database: ""
-        basicAuth: false
-        isDefault: false
         jsonData:
           index: otel-traces-v0_9
-          logLevelField: ""
-          logMessageField: ""
-          pdcInjected: false
+      - uid: quickwit-log
+        name: QuickWit Log
+        type: quickwit-quickwit-datasource
+        access: proxy
+        url: http://quickwit-searcher.monitoring.svc.cluster.local:7280/api/v1
+        jsonData:
+          index: otel-logs-v0_9
 
 plugins:
   - quickwit-quickwit-datasource

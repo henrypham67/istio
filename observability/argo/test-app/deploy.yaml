@@ -30,5 +30,5 @@ spec:
             value: test-app
           - name: TARGET_ONE_SVC
             value: app-a:8000
-          - name: OTEL_SERVICE_NAME
+          - name: TARGET_TWO_SVC
             value: app-a:8000

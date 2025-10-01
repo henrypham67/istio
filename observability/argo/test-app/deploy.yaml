@@ -28,3 +28,7 @@ spec:
         env:
           - name: OTEL_SERVICE_NAME
             value: test-app
+          - name: TARGET_ONE_SVC
+            value: app-a:8000
+          - name: OTEL_SERVICE_NAME
+            value: app-a:8000
